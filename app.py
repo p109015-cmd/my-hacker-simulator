@@ -1,26 +1,34 @@
 import streamlit as st
 import streamlit.components.v1 as components
-import base64
 
 # 1. 網頁頁面初始化設定（強制全螢幕、純黑背景）
-st.set_page_config(page_title="究極黑客控制台 v11.0", page_icon="💀", layout="wide")
+st.set_page_config(page_title="究極黑客控制台 v11.1", page_icon="💀", layout="wide")
 
-# 強制隱藏 Streamlit 的所有原生網頁元件
+# 強制隱藏 Streamlit 的所有原生網頁元件，達成 100% 全螢幕純黑客視窗
 st.markdown(
     """
     <style>
     [data-testid="stHeader"], footer, #MainMenu {visibility: hidden !important;}
     .stApp {background-color: #000000 !important;}
     .block-container {padding: 0px !important; max-width: 100% !important; margin: 0px !important;}
-    iframe {display: block !important; border: none !important; width: 100% !important;}
-    body {overflow: hidden !important;}
+    
+    /* 讓 Streamlit 的 HTML 元件容器完全撐滿整個視窗高度，且不可出現外部捲軸 */
+    [data-testid="stHtmlBlock"], [data-testid="stElementContainer"], iframe {
+        width: 100% !important;
+        height: 100vh !important;
+        display: block !important;
+        border: none !important;
+    }
+    body {
+        overflow: hidden !important;
+    }
     </style>
     """, 
     unsafe_allow_html=True
 )
 
-# 2. 純淨網頁控制引擎（將 HTML 編碼為 Base64，強制讓瀏覽器以獨立頁面渲染以獲得完整的滾動權限）
-html_content = """
+# 2. 注入完全去姓名、內部自適應強制滾動（文字滿頁自動往上推）的數位矩陣控制引擎
+html_code = """
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -32,34 +40,41 @@ html_content = """
             margin: 0;
             padding: 0;
             background-color: #000;
+            overflow: hidden; /* 徹底關閉外部捲軸，防止版面破裂 */
             width: 100%;
-            height: 100%;
-            overflow-y: auto; /* 允許整個網頁主體上下滾動 */
+            height: 100vh;
             font-family: 'Courier New', Courier, monospace;
         }
         canvas {
             display: block;
-            position: fixed; /* 固定在背景，不隨滾動條移動 */
+            position: absolute;
             top: 0;
             left: 0;
             z-index: 1;
             opacity: 0.15;
-            width: 100vw;
-            height: 100vh;
         }
         
-        /* 終端機面板：高度隨內容自動撐開，讓最外層出現滾動條 */
+        /* 終端機面板：固定全螢幕，內部滿溢時自動在內部無形滾動 */
         #terminal {
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
             z-index: 2;
-            padding: 30px;
+            padding: 40px;
             color: #00ff00;
             font-size: 18px;
             line-height: 1.6;
+            overflow-y: scroll; /* 允許內部滾動 */
             white-space: pre-wrap;
             word-wrap: break-word;
             text-shadow: 0 0 4px #00ff00;
-            min-height: 100vh;
+        }
+        
+        /* 隱藏內部的滾動條，達成畫面上完全看不到任何捲軸的純核心介面 */
+        #terminal::-webkit-scrollbar {
+            display: none;
         }
         
         .cursor {
@@ -93,9 +108,7 @@ html_content = """
             letter-spacing: 2px;
         }
         #hidden-input {
-            position: fixed;
-            top: 0;
-            left: 0;
+            position: absolute;
             opacity: 0;
             z-index: -1;
         }
@@ -150,7 +163,7 @@ html_content = """
         setInterval(drawMatrix, 30);
 
 
-        // === 2. 隨機代碼 + 視窗級自動滿頁滾動引擎 ===
+        // === 2. 隨機核心代碼與全自動強制置底滾動引擎 ===
         const terminal = document.getElementById('terminal');
         const hiddenInput = document.getElementById('hidden-input');
         const successOverlay = document.getElementById('success-overlay');
@@ -177,12 +190,10 @@ html_content = """
         let lineCount = 0; 
         let isUnlocked = false; 
 
-        // 🛠️ 【即時視窗滾動修正】：只要偵測到文字變多，直接命令整個網頁 window 滾動到最底端！
+        // 核心滾動機制：只要一爆發新文字，立刻將 terminal 內部的 scrollTop 強制設定為最大值
+        // 這會使最舊的文字全自動往畫面上方推，最新代碼永遠保留在視窗底端！
         const observer = new MutationObserver(() => {
-            window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'smooth'
-            });
+            terminal.scrollTop = terminal.scrollHeight;
         });
         observer.observe(terminal, { childList: true, subtree: true });
 
@@ -209,7 +220,7 @@ html_content = """
 
         let currentText = [
             "==================================================================",
-            "💀 首席網路安全專家：[REDACTED] | 核心作戰控制終端 v11.0",
+            "💀 首席網路安全專家：[REDACTED] | 核心作戰控制終端 v11.1",
             "==================================================================",
             ">> CORE STATUS: READY",
             ">> INFILTRATION LEVEL: INITIALIZED",
@@ -227,7 +238,7 @@ html_content = """
 
             for (let k = 0; k < 5; k++) {
                 if (!currentLineBuffer || bufferCharIndex >= currentLineBuffer.length) {
-                    if (lineCount >= 35) { // 增加至 35 行，讓它滾動得更過癮
+                    if (lineCount >= 28) { // 當生成超過 28 行代碼後判定解鎖
                         isUnlocked = true;
                         successOverlay.style.display = 'block'; 
                         return;
@@ -260,9 +271,5 @@ html_content = """
 </html>
 """
 
-# 將 HTML 轉為 Base64 Data URI，防止 Streamlit 多層容器截斷滾動行為
-b64_html = base64.b64encode(html_content.encode('utf-8')).decode('utf-8')
-data_uri = f"data:text/html;base64,{b64_html}"
-
-# 3. 使用獨立的 iframe 進行高度擴展渲染，完美實現自動向下滑動
-st.components.v1.iframe(data_uri, height=1200, scrolling=True)
+# 3. 渲染終端機（直接拉滿視窗，內部自動無限向底端推進）
+components.html(html_code, height=1200)
