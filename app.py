@@ -42,7 +42,7 @@ raw_html_code = """
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
             z-index: 99999; background-size: 100% 4px, 6px 100%; pointer-events: none;
         }
-        canvas { display: block; position: absolute; top: 0; left: 0; z-index: 1; opacity: 0.12; }
+        canvas.bg-matrix { display: block; position: absolute; top: 0; left: 0; z-index: 1; opacity: 0.12; }
         
         /* 階段一：黑客入侵終端 */
         #terminal {
@@ -118,14 +118,13 @@ raw_html_code = """
             100% { transform: scaleY(0) scaleX(0); filter: brightness(5); background: #fff; opacity: 0; }
         }
         
-        /* 衛星影片容器 */
-        .video-container {
+        /* 衛星雷達繪圖容器 */
+        .radar-container {
             position: relative; width: 560px; height: 315px; margin: 25px auto;
             border: 2px solid #00ff00; box-shadow: 0 0 30px rgba(0,255,0,0.6);
             background: #000; overflow: hidden;
-            filter: hue-rotate(20deg) saturate(1.5) contrast(1.1);
         }
-        .video-container video { width: 100%; height: 100%; object-fit: cover; }
+        #satRadarCanvas { width: 100%; height: 100%; display: block; }
         
         /* 劇烈搖晃效果 */
         .nuke-alert-active { background: rgba(25,0,0,1) !important; animation: screen-shake 0.06s infinite !important; }
@@ -140,7 +139,7 @@ raw_html_code = """
     </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas" class="bg-matrix"></canvas>
     
     <div id="backdoor-modal">
         <div style="font-size:14px; color:#00ff00; font-weight:bold; letter-spacing:1px;">⚠️ [OVERRIDE BYPASS TERMINAL]</div>
@@ -233,6 +232,7 @@ raw_html_code = """
         
         var lineCount = 0; var isUnlocked = false; var maxLines = 500;
         var alertCount = 0; var isDead = false;
+        var radarIntervalId = null; // 雷達繪圖排程計時器
         
         function triggerTerminalShake() { terminal.classList.add("shake"); setTimeout(function() { terminal.classList.remove("shake"); }, 400); }
         
@@ -265,7 +265,6 @@ raw_html_code = """
             document.getElementById("input-line").scrollIntoView({ behavior: "smooth", block: "end" });
         }
         
-        // 15 秒徹底燒毀熔解主邏輯
         function triggerMeltdownBurn() {
             isDead = true;
             openFxLayer();
@@ -305,7 +304,7 @@ raw_html_code = """
                 return;
             }
             if (isDead) {
-                if (e.code === "Numpad9") { location.reload(); }
+                if (e.code === "Numpad9") { stopRadar(); location.reload(); }
                 return;
             }
             if (backdoorModal.style.display === "block") return;
@@ -321,7 +320,6 @@ raw_html_code = """
                     statusDisplay.textContent = "目前進度: [ ⚡ PHASE 5: 核心矩陣協議破解中... ] [100%]";
                     setTimeout(function() { enterC2Panel(); }, 300);
                 } else {
-                    // 密碼打錯：直接啟動自爆熔毀
                     triggerMeltdownBurn();
                 }
             } else if (e.key === "Escape") {
@@ -329,7 +327,17 @@ raw_html_code = """
             }
         }
 
-        function openFxLayer() { c2Dashboard.style.display = "none"; fxLayer.style.display = "block"; fxLayer.innerHTML = ""; fxLayer.className = ""; }
+        function openFxLayer() { 
+            stopRadar();
+            c2Dashboard.style.display = "none"; 
+            fxLayer.style.display = "block"; 
+            fxLayer.innerHTML = ""; 
+            fxLayer.className = ""; 
+        }
+
+        function stopRadar() {
+            if(radarIntervalId) { clearInterval(radarIntervalId); radarIntervalId = null; }
+        }
         
         /* C2 Panel 按鈕功能模組 */
         function triggerDump() {
@@ -348,23 +356,121 @@ raw_html_code = """
             }, 25);
         }
         
+        /* 2. 衛星劫持：全面改用 100% 機密獨立純前端 Canvas 雷達模擬，保證不依賴外部任何影片網址 */
         function triggerSatellite() {
             openFxLayer();
-            var videoUrl = "https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-background-1611-large.mp4"; 
-            var pct = 0; var container = document.createElement("div"); container.style.textAlign = "center"; container.style.marginTop = "5vh";
+            var pct = 0; 
+            var container = document.createElement("div"); 
+            container.style.textAlign = "center"; container.style.marginTop = "3vh";
             container.innerHTML = '<h2 style="letter-spacing:3px;">🛰️ [ORBITAL SATELLITE HIJACK PROTOCOL]</h2>' +
-                                   '<div style="font-size:16px; color:#00aa00; margin-bottom:15px;">正在強制劫持下行微波，同步調取實時光學視訊源...</div>' +
-                                   '<div class="video-container"><video src="' + videoUrl + '" autoplay loop muted playsinline></video></div>' +
-                                   '<div id="sat-progress-bar" style="width:60%; margin:0 auto; border:1px solid #00ff00; padding:3px; text-align:left;"><div id="sat-fill" style="width:0%; background:#00ff00; height:20px;"></div></div>' +
-                                   '<div id="sat-pct" style="margin-top:10px; font-size:24px;">0%</div>' +
-                                   '<div id="sat-details" style="margin-top:20px; font-size:14px; text-align:left; width:50%; margin-left:auto; margin-right:auto; color:#33ff33; height:120px; overflow-y:auto;"></div>';
+                                   '<div style="font-size:14px; color:#00aa00; margin-bottom:10px;">系統已切換至虛擬矩陣接收器，正實時渲染軌道特種光學雷達影像...</div>' +
+                                   '<div class="radar-container">' +
+                                   '  <canvas id="satRadarCanvas" width="560" height="315"></canvas>' +
+                                   '</div>' +
+                                   '<div id="sat-progress-bar" style="width:60%; margin:0 auto; border:1px solid #00ff00; padding:3px; text-align:left;"><div id="sat-fill" style="width:0%; background:#00ff00; height:18px;"></div></div>' +
+                                   '<div id="sat-pct" style="margin-top:5px; font-size:20px;">0%</div>' +
+                                   '<div id="sat-details" style="margin-top:15px; font-size:13px; text-align:left; width:60%; margin-left:auto; margin-right:auto; color:#33ff33; height:110px; overflow-y:auto; border-top:1px dashed #005500; padding-top:10px;"></div>';
             fxLayer.appendChild(container);
-            var fill = document.getElementById("sat-fill"); var pctText = document.getElementById("sat-pct"); var details = document.getElementById("sat-details");
+            
+            // 啟動自畫雷達渲染引擎
+            initRadarEngine();
+            
+            var fill = document.getElementById("sat-fill"); 
+            var pctText = document.getElementById("sat-pct"); 
+            var details = document.getElementById("sat-details");
+            
             var timer = setInterval(function() {
                 pct += 2; fill.style.width = pct + "%"; pctText.textContent = pct + "%";
-                if(pct % 10 === 0) { details.innerHTML += "&gt;&gt; 量子加密金鑰破譯中... 位元組比對: [OK] | 鎖定軌道經緯度: " + (Math.random()*180).toFixed(4) + "°N, " + (Math.random()*90).toFixed(4) + "°E<br>"; details.scrollTop = details.scrollHeight; }
-                if(pct >= 100) { clearInterval(timer); details.innerHTML += "<br><span style='color:#ffffff; font-size:18px; font-weight:bold;'>🛰️ [HIJACK SUCCESS] 衛星控制鏈已成功切換！</span><br><button onclick='backToC2()' style='background:#003300; color:#00ff00; border:1px solid #00ff00; padding:10px; margin-top:15px; cursor:pointer;'>返回主控面板</button>"; details.scrollTop = details.scrollHeight; }
+                if(pct % 10 === 0) { 
+                    details.innerHTML += "&gt;&gt; 光學反饋接收中... 經緯鎖定: " + (Math.random()*180).toFixed(4) + "°N, " + (Math.random()*90).toFixed(4) + "°E | 訊號強度: [EXCELLENT]<br>"; 
+                    details.scrollTop = details.scrollHeight; 
+                }
+                if(pct >= 100) { 
+                    clearInterval(timer); 
+                    details.innerHTML += "<br><span style='color:#ffffff; font-size:16px; font-weight:bold;'>🛰️ [HIJACK SUCCESS] 衛星鎖定機制已固化，全球戰術掃描儀常駐在線！</span><br><button onclick='backToC2()' style='background:#003300; color:#00ff00; border:1px solid #00ff00; padding:10px; margin-top:15px; cursor:pointer;'>返回主控面板</button>"; 
+                    details.scrollTop = details.scrollHeight; 
+                }
             }, 60);
+        }
+        
+        // 純前端模擬軍事雷達掃描動畫（不耗網路流量，100% 成功率）
+        function initRadarEngine() {
+            var rCanvas = document.getElementById("satRadarCanvas");
+            if(!rCanvas) return;
+            var rCtx = rCanvas.getContext("2d");
+            var angle = 0;
+            
+            // 隨機產生一些代表地面目標點的座標
+            var targets = [];
+            for(var i=0; i<12; i++) {
+                targets.push({
+                    x: Math.random() * (rCanvas.width - 100) + 50,
+                    y: Math.random() * (rCanvas.height - 60) + 30,
+                    size: Math.random() * 3 + 2,
+                    alpha: Math.random()
+                });
+            }
+
+            radarIntervalId = setInterval(function() {
+                // 1. 純黑背景覆蓋
+                rCtx.fillStyle = "rgba(0, 0, 0, 0.15)";
+                rCtx.fillRect(0, 0, rCanvas.width, rCanvas.height);
+                
+                var cx = rCanvas.width / 2;
+                var cy = rCanvas.height / 2;
+                
+                // 2. 畫雷達同心圓線條
+                rCtx.strokeStyle = "rgba(0, 255, 0, 0.2)";
+                rCtx.lineWidth = 1;
+                for(var r = 40; r <= 150; r += 40) {
+                    rCtx.beginPath(); rCtx.arc(cx, cy, r, 0, Math.PI * 2); rCtx.stroke();
+                }
+                
+                // 十字星準心線
+                rCtx.beginPath(); rCtx.moveTo(cx - 180, cy); rCtx.lineTo(cx + 180, cy); rCtx.stroke();
+                rCtx.beginPath(); rCtx.moveTo(cx, cy - 140); rCtx.lineTo(cx, cy + 140); rCtx.stroke();
+                
+                // 3. 畫隨機掃描到的軍事目標點
+                for(var i=0; i<targets.length; i++) {
+                    var t = targets[i];
+                    rCtx.fillStyle = "rgba(0, 255, 50, " + t.alpha + ")";
+                    rCtx.beginPath();
+                    rCtx.arc(t.x, t.y, t.size, 0, Math.PI*2);
+                    rCtx.fill();
+                    // 加上科幻小外框
+                    if(t.alpha > 0.5) {
+                        rCtx.strokeStyle = "rgba(0, 255, 0, " + (t.alpha - 0.3) + ")";
+                        rCtx.strokeRect(t.x - t.size - 2, t.y - t.size - 2, t.size*2 + 4, t.size*2 + 4);
+                    }
+                    // 動態閃爍
+                    if(Math.random() > 0.9) t.alpha = Math.random();
+                }
+                
+                // 4. 畫旋轉掃描光束
+                angle += 0.04;
+                var bx = cx + Math.cos(angle) * 220;
+                var by = cy + Math.sin(angle) * 220;
+                
+                var gradient = rCtx.createLinearGradient(cx, cy, bx, by);
+                gradient.addColorStop(0, "rgba(0, 255, 0, 0.6)");
+                gradient.addColorStop(1, "rgba(0, 255, 0, 0.0)");
+                
+                rCtx.strokeStyle = gradient;
+                rCtx.lineWidth = 3;
+                rCtx.beginPath(); rCtx.moveTo(cx, cy); rCtx.lineTo(bx, by); rCtx.stroke();
+                
+                // 5. 左上角加上雜訊文字
+                rCtx.fillStyle = "#00ff00";
+                rCtx.font = "11px monospace";
+                rCtx.fillText("SAT-ID: ORBIT-GHOST-X9", 15, 20);
+                rCtx.fillText("ALTITUDE: 42,164 KM", 15, 35);
+                rCtx.fillText("SYS_LOCK: ACTIVE", 15, 50);
+                
+                // 右下角加上掃描經緯度數據變動
+                rCtx.fillText("LAT: " + (Math.sin(angle)*90).toFixed(4), rCanvas.width - 140, rCanvas.height - 35);
+                rCtx.fillText("LNG: " + (Math.cos(angle)*180).toFixed(4), rCanvas.width - 140, rCanvas.height - 20);
+                
+            }, 30);
         }
         
         function triggerManualNuke() {
@@ -379,7 +485,7 @@ raw_html_code = """
         }
         
         function triggerClean() { openFxLayer(); fxLayer.innerHTML = "<div style='text-align:center; margin-top:30vh; font-size:20px; color:#00ff00;'>[+] 正在抹除反向連線 Session 指標...<br>[+] 正在清洗 C2 本地歷史緩衝暫存區...<br>[+] 軌跡完全清除完畢。系統即將重新啟動...</div>"; setTimeout(function() { location.reload(); }, 1200); }
-        function backToC2() { fxLayer.style.display = "none"; c2Dashboard.style.display = "grid"; document.getElementById("c2-cmd-field").focus(); }
+        function backToC2() { stopRadar(); fxLayer.style.display = "none"; c2Dashboard.style.display = "grid"; document.getElementById("c2-cmd-field").focus(); }
         function logC2(text) { const p = document.createElement("p"); p.style.margin = "4px 0"; p.innerHTML = text; c2Output.appendChild(p); c2Output.scrollTop = c2Output.scrollHeight; }
         
         function handleC2Command(e) {
