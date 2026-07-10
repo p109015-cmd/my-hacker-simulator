@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # 1. 網頁頁面初始化設定（強制全螢幕、純黑背景）
-st.set_page_config(page_title="究極黑客控制台 v11.1", page_icon="💀", layout="wide")
+st.set_page_config(page_title="究極黑客控制台 v11.2", page_icon="💀", layout="wide")
 
 # 強制隱藏 Streamlit 的所有原生網頁元件，達成 100% 全螢幕純黑客視窗
 st.markdown(
@@ -12,7 +12,7 @@ st.markdown(
     .stApp {background-color: #000000 !important;}
     .block-container {padding: 0px !important; max-width: 100% !important; margin: 0px !important;}
     
-    /* 讓 Streamlit 的 HTML 元件容器完全撐滿整個視窗高度，且不可出現外部捲軸 */
+    /* 強制讓元件的內外層容器都具備完整的滾動能力 */
     [data-testid="stHtmlBlock"], [data-testid="stElementContainer"], iframe {
         width: 100% !important;
         height: 100vh !important;
@@ -27,7 +27,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# 2. 注入完全去姓名、內部自適應強制滾動（文字滿頁自動往上推）的數位矩陣控制引擎
+# 2. 注入完全去姓名、內部流暢虛擬滾動引擎
 html_code = """
 <!DOCTYPE html>
 <html lang="zh-TW">
@@ -40,7 +40,7 @@ html_code = """
             margin: 0;
             padding: 0;
             background-color: #000;
-            overflow: hidden; /* 徹底關閉外部捲軸，防止版面破裂 */
+            overflow: hidden; /* 防止最外層大環境破相 */
             width: 100%;
             height: 100vh;
             font-family: 'Courier New', Courier, monospace;
@@ -54,7 +54,7 @@ html_code = """
             opacity: 0.15;
         }
         
-        /* 終端機面板：固定全螢幕，內部滿溢時自動在內部無形滾動 */
+        /* 終端機面板：全螢幕高度，啟用原生平滑滾動 */
         #terminal {
             position: absolute;
             top: 0;
@@ -66,13 +66,13 @@ html_code = """
             color: #00ff00;
             font-size: 18px;
             line-height: 1.6;
-            overflow-y: scroll; /* 允許內部滾動 */
+            overflow-y: auto; /* 開啟內部核心滾動 */
             white-space: pre-wrap;
             word-wrap: break-word;
             text-shadow: 0 0 4px #00ff00;
         }
         
-        /* 隱藏內部的滾動條，達成畫面上完全看不到任何捲軸的純核心介面 */
+        /* 隱藏原生網頁捲軸，保持純粹黑客介面 */
         #terminal::-webkit-scrollbar {
             display: none;
         }
@@ -112,12 +112,25 @@ html_code = """
             opacity: 0;
             z-index: -1;
         }
+        .log-line {
+            margin-bottom: 4px;
+        }
     </style>
 </head>
 <body>
 
     <canvas id="canvas"></canvas>
-    <div id="terminal"></div>
+    <div id="terminal">
+        <div class="log-line">==================================================================</div>
+        <div class="log-line">💀 首席網路安全專家：[REDACTED] | 核心作戰控制終端 v11.2</div>
+        <div class="log-line">==================================================================</div>
+        <div class="log-line">&gt;&gt; CORE STATUS: READY</div>
+        <div class="log-line">&gt;&gt; INFILTRATION LEVEL: INITIALIZED</div>
+        <div class="log-line"></div>
+        <div id="dynamic-content"></div>
+        <div id="input-line">root@ghost-terminal:~# <span class="cursor"></span></div>
+    </div>
+    
     <input type="text" id="hidden-input" autofocus>
 
     <div id="success-overlay">
@@ -128,7 +141,7 @@ html_code = """
     </div>
 
     <script>
-        // === 1. Matrix 數位雨 ===
+        // === 1. Matrix 數位雨引擎 ===
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
@@ -163,8 +176,10 @@ html_code = """
         setInterval(drawMatrix, 30);
 
 
-        // === 2. 隨機核心代碼與全自動強制置底滾動引擎 ===
+        // === 2. 核心隨機數據庫與流暢聚焦引擎 ===
         const terminal = document.getElementById('terminal');
+        const dynamicContent = document.getElementById('dynamic-content');
+        const inputLine = document.getElementById('input-line');
         const hiddenInput = document.getElementById('hidden-input');
         const successOverlay = document.getElementById('success-overlay');
 
@@ -190,13 +205,6 @@ html_code = """
         let lineCount = 0; 
         let isUnlocked = false; 
 
-        // 核心滾動機制：只要一爆發新文字，立刻將 terminal 內部的 scrollTop 強制設定為最大值
-        // 這會使最舊的文字全自動往畫面上方推，最新代碼永遠保留在視窗底端！
-        const observer = new MutationObserver(() => {
-            terminal.scrollTop = terminal.scrollHeight;
-        });
-        observer.observe(terminal, { childList: true, subtree: true });
-
         function generateRandomHackerLine() {
             lineCount++; 
             const hexAddr = '0x' + Math.floor(Math.random() * 16777215).toString(16).toUpperCase() + 
@@ -207,69 +215,27 @@ html_code = """
                 const tag = tags[Math.floor(Math.random() * tags.length)];
                 const action = actions[Math.floor(Math.random() * actions.length)];
                 const target = targets[Math.floor(Math.random() * targets.length)];
-                return ['', '[' + tag + '] [MEM:' + hexAddr + '] ' + action + ' >> 目標: ' + target + '...'].join(String.fromCharCode(10));
+                return '[' + tag + '] [MEM:' + hexAddr + '] ' + action + ' >> 目標: ' + target + '...';
             } else if (rand < 0.7) {
                 const code = scripts_pool[Math.floor(Math.random() * scripts_pool.length)];
-                return ['', '[CODE_STR] [ADDR:' + hexAddr + ']  ' + code].join(String.fromCharCode(10));
+                return '[CODE_STR] [ADDR:' + hexAddr + ']  ' + code;
             } else {
                 const progress = '■'.repeat(Math.floor(Math.random() * 15) + 10);
                 const percent = Math.floor(Math.random() * 40) + 60;
-                return ['', '[DECRYPT] [BLOCK:' + hexAddr + '] 演算破解中 [' + progress + '] ' + percent + '% SUCCESS...'].join(String.fromCharCode(10));
+                return '[DECRYPT] [BLOCK:' + hexAddr + '] 演算破解中 [' + progress + '] ' + percent + '% SUCCESS...';
             }
         }
 
-        let currentText = [
-            "==================================================================",
-            "💀 首席網路安全專家：[REDACTED] | 核心作戰控制終端 v11.1",
-            "==================================================================",
-            ">> CORE STATUS: READY",
-            ">> INFILTRATION LEVEL: INITIALIZED",
-            "",
-            "root@ghost-terminal:~# <span class='cursor'></span>"
-        ].join(String.fromCharCode(10));
-        
-        terminal.innerHTML = currentText;
+        // 新增一行指令，並強制讓輸入行平滑滾動到最底端
+        function appendNewLine() {
+            if (isUnlocked) return;
 
-        let currentLineBuffer = "";
-        let bufferCharIndex = 0;
-
-        function autoTypeHackerCode() {
-            if (isUnlocked) return; 
-
-            for (let k = 0; k < 5; k++) {
-                if (!currentLineBuffer || bufferCharIndex >= currentLineBuffer.length) {
-                    if (lineCount >= 28) { // 當生成超過 28 行代碼後判定解鎖
-                        isUnlocked = true;
-                        successOverlay.style.display = 'block'; 
-                        return;
-                    }
-                    currentLineBuffer = generateRandomHackerLine();
-                    bufferCharIndex = 0;
-                }
-
-                let nextChar = currentLineBuffer.charAt(bufferCharIndex);
-                if (nextChar.charCodeAt(0) === 10) {
-                    nextChar = '<br>';
-                }
-
-                let base = terminal.innerHTML.replace("<span class=\\"cursor\\"></span>", "");
-                terminal.innerHTML = base + nextChar + "<span class=\\"cursor\\"></span>";
-                bufferCharIndex++;
+            if (lineCount >= 30) {
+                isUnlocked = true;
+                successOverlay.style.display = 'block';
+                return;
             }
-        }
 
-        document.body.addEventListener('click', () => { hiddenInput.focus(); });
-        document.addEventListener('keydown', (e) => {
-            if (e.key !== 'Shift' && e.key !== 'Control' && e.key !== 'Alt' && e.key !== 'Meta') {
-                autoTypeHackerCode();
-            }
-        });
-        
-        setTimeout(() => { hiddenInput.focus(); }, 200);
-    </script>
-</body>
-</html>
-"""
-
-# 3. 渲染終端機（直接拉滿視窗，內部自動無限向底端推進）
-components.html(html_code, height=1200)
+            const rawText = generateRandomHackerLine();
+            const div = document.createElement('div');
+            div.className
