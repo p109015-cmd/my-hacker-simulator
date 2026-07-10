@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # 1. 網頁頁面初始化設定（強制全螢幕、純黑背景）
-st.set_page_config(page_title="究極黑客控制台 v17.4", page_icon="💀", layout="wide")
+st.set_page_config(page_title="究極黑客控制台 v17.5", page_icon="💀", layout="wide")
 
 # 強制隱藏 Streamlit 的所有原生網頁 UI
 st.markdown(
@@ -24,13 +24,13 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# 2. 全核心程式碼導入（限制只能使用小鍵盤 9 鍵修復）
+# 2. 全核心程式碼導入（超長15秒核心熔毀 + 專屬小鍵盤9鍵解鎖）
 raw_html_code = """
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>Matrix Terminal Command Center v17.4</title>
+    <title>Matrix Terminal Command Center v17.5</title>
     <style>
         * { box-sizing: border-box; }
         body, html {
@@ -114,15 +114,15 @@ raw_html_code = """
             filter: hue-rotate(60deg) contrast(1.2) sepia(0.2);
         }
         
-        /* 劇烈搖晃效果（晶片爆炸特別加重振幅） */
-        .nuke-alert-active { background: rgba(25,0,0,1) !important; animation: screen-shake 0.06s infinite !important; }
+        /* 劇烈搖晃效果（晶片大爆炸特別加強震盪感） */
+        .nuke-alert-active { background: rgba(25,0,0,1) !important; animation: screen-shake 0.05s infinite !important; }
         .shake { animation: screen-shake 0.4s linear; }
         @keyframes screen-shake {
             0%, 100% { transform: translate(0, 0); }
-            20% { transform: translate(-10px, 9px); }
-            40% { transform: translate(10px, -8px); }
-            60% { transform: translate(-9px, -4px); }
-            80% { transform: translate(8px, 7px); }
+            20% { transform: translate(-11px, 9px); }
+            40% { transform: translate(11px, -9px); }
+            60% { transform: translate(-10px, -5px); }
+            80% { transform: translate(9px, 8px); }
         }
     </style>
 </head>
@@ -131,7 +131,7 @@ raw_html_code = """
     
     <div id="terminal">
         <div class="log-line">========================================================================================</div>
-        <div class="log-line">💀 遠端深層控制鏈主控台 v17.4 | 侵入成功後將自動解鎖 C2 全功能戰略面板</div>
+        <div class="log-line">💀 遠端深層控制鏈主控台 v17.5 | 侵入成功後將自動解鎖 C2 全功能戰略面板</div>
         <div class="log-line">========================================================================================</div>
         <div id="dynamic-content"></div>
         <div id="status-display" class="status-panel">目前進度: [ 🧭 PHASE 1: 初始化全網子網段探測機制... ] [0%]</div>
@@ -141,7 +141,7 @@ raw_html_code = """
     <input type="text" id="hidden-input" autofocus>
     
     <div id="c2-dashboard">
-        <div class="panel-header">💀 [GHOST-NETWORK CENTRAL C2 PANEL v17.4] - ACCESS GRANTED 💀</div>
+        <div class="panel-header">💀 [GHOST-NETWORK CENTRAL C2 PANEL v17.5] - ACCESS GRANTED 💀</div>
         <div class="panel-main">
             <div class="control-side">
                 <div style="font-weight:bold; border-bottom: 1px solid #00ff00; padding-bottom:5px; margin-bottom:5px;">[ 戰略後門操控模組 ]</div>
@@ -225,7 +225,6 @@ raw_html_code = """
                 return;
             }
             
-            // 0.8% 平衡觸發率
             if (Math.random() < 0.008) {
                 alertCount++;
                 triggerTerminalShake();
@@ -240,7 +239,7 @@ raw_html_code = """
                     fxLayer.classList.add("nuke-alert-active");
                     
                     var timeLeft = 15;
-                    fxLayer.innerHTML = "<div id='burn-panel' style='text-align:center; color:#ff0055; font-size:45px; font-weight:bold; margin-top:15vh;'>" +
+                    fxLayer.innerHTML = "<div style='text-align:center; color:#ff0055; font-size:45px; font-weight:bold; margin-top:15vh;'>" +
                                         "💥 [SYSTEM MELTDOWN: CRITICAL HARDWARE EXPLOSION] 💥<br>" +
                                         "<span style='font-size:22px; color:#fff;'>核心晶片正在承受不可逆的高壓過載熔毀...</span><br>" +
                                         "<div style='font-size:60px; color:#ff0055; margin-top:20px;' id='burn-timer'>15s</div>" +
@@ -248,12 +247,12 @@ raw_html_code = """
                     
                     var burnInterval = setInterval(function() {
                         timeLeft--;
-                        var timerEl = document.createElement("burn-timer");
+                        var timerEl = document.getElementById("burn-timer");
                         if(timerEl) timerEl.textContent = timeLeft + "s";
                         if(timeLeft <= 0) { clearInterval(burnInterval); }
                     }, 1000);
 
-                    // 1551 倍超長 15 秒核心大爆炸
+                    // 15 秒大爆炸持續時間
                     setTimeout(function() {
                         clearInterval(burnInterval);
                         fxLayer.className = "dead-screen";
@@ -263,140 +262,4 @@ raw_html_code = """
                 }
             } else {
                 var div = document.createElement("div"); div.className = "log-line";
-                div.textContent = "[SYSTEM_CORE] [OK] 注入核心控制流協定因子，正在重構核心記憶體指標...";
-                dynamicContent.appendChild(div); lineCount++;
-            }
-            
-            var pct = Math.floor((lineCount / maxLines) * 100);
-            statusDisplay.textContent = "目前進度: [ ⚡ PHASE " + (Math.floor(pct/20)+1) + ": 核心矩陣協議破解中... ] [" + pct + "%]";
-            document.getElementById("input-line").scrollIntoView({ behavior: "smooth", block: "end" });
-        }
-        
-        document.body.addEventListener("click", function() { if(!isUnlocked && !isDead) hiddenInput.focus(); });
-        
-        document.addEventListener("keydown", function(e) {
-            // 【關鍵修正】處於死亡畫面時，強制「只有」小鍵盤 9 (e.code === "Numpad9") 才能重載頁面！主鍵盤的 9 會完全沒反應！
-            if (isDead) {
-                if (e.code === "Numpad9") {
-                    location.reload();
-                }
-                return;
-            }
-            
-            if (!isUnlocked && e.key !== "Shift" && e.key !== "Control" && e.key !== "Alt" && e.key !== "Meta") {
-                for(var i=0; i<5; i++) { appendNewLine(); }
-            }
-        });
-        
-        function openFxLayer() { c2Dashboard.style.display = "none"; fxLayer.style.display = "block"; fxLayer.innerHTML = ""; fxLayer.className = ""; }
-        
-        /* 1. 📂 數據導出 */
-        function triggerDump() {
-            openFxLayer();
-            var count = 0;
-            var timer = setInterval(function() {
-                var d = document.createElement("div");
-                d.style.color = "#33ff33"; d.style.fontSize = "14px"; d.style.marginBottom = "2px";
-                d.textContent = "[STREAM_DUMP] UID_" + Math.floor(Math.random()*89999+10000) + " | IP: " + Math.floor(Math.random()*254+1) + "." + Math.floor(Math.random()*254) + ".71." + Math.floor(Math.random()*254) + " | PASS_HASH: " + Math.random().toString(16).substring(2,15).toUpperCase() + " | EXPORT: SUCCESS";
-                fxLayer.appendChild(d);
-                fxLayer.scrollTop = fxLayer.scrollHeight;
-                count++;
-                if(count >= 150) { 
-                    clearInterval(timer);
-                    var endMsg = document.createElement("div");
-                    endMsg.style.color = "#00ff00"; endMsg.style.fontSize = "20px"; endMsg.style.marginTop = "20px"; endMsg.style.fontWeight = "bold";
-                    endMsg.innerHTML = "<br>💀 [DATA EXPORT COMPLETE] 數萬筆核心個資與密碼庫已完全拖庫快取成功。<br><button onclick='backToC2()' style='background:#003300; color:#00ff00; border:1px solid #00ff00; padding:10px; margin-top:15px; cursor:pointer;'>返回主控面板</button>";
-                    fxLayer.appendChild(endMsg);
-                    fxLayer.scrollTop = fxLayer.scrollHeight;
-                }
-            }, 25);
-        }
-        
-        /* 2. 🛰️ 衛星劫持 */
-        function triggerSatellite() {
-            openFxLayer();
-            var videoPool = ["W0LHTWG-UmQ", "EEIk7gwjgIM"]; 
-            var chosenVideoId = videoPool[Math.floor(Math.random() * videoPool.length)];
-            
-            var pct = 0;
-            var container = document.createElement("div");
-            container.style.textAlign = "center"; container.style.marginTop = "5vh";
-            container.innerHTML = '<h2 style="letter-spacing:3px;">🛰️ [ORBITAL SATELLITE HIJACK PROTOCOL]</h2>' +
-                                   '<div style="font-size:16px; color:#00aa00; margin-bottom:15px;">正在強制劫持下行微波，同步調取實時光學視訊源...</div>' +
-                                   '<div class="video-container">' +
-                                   '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/' + chosenVideoId + '?autoplay=1&mute=1&controls=0&loop=1&playlist=' + chosenVideoId + '" frameborder="0" allow="autoplay" allowfullscreen></iframe>' +
-                                   '</div>' +
-                                   '<div id="sat-progress-bar" style="width:60%; margin:0 auto; border:1px solid #00ff00; padding:3px; text-align:left;"><div id="sat-fill" style="width:0%; background:#00ff00; height:20px;"></div></div>' +
-                                   '<div id="sat-pct" style="margin-top:10px; font-size:24px;">0%</div>' +
-                                   '<div id="sat-details" style="margin-top:20px; font-size:14px; text-align:left; width:50%; margin-left:auto; margin-right:auto; color:#33ff33; height:120px; overflow-y:auto;"></div>';
-            fxLayer.appendChild(container);
-            
-            var fill = document.getElementById("sat-fill");
-            var pctText = document.getElementById("sat-pct");
-            var details = document.getElementById("sat-details");
-            
-            var timer = setInterval(function() {
-                pct += 2;
-                fill.style.width = pct + "%";
-                pctText.textContent = pct + "%";
-                if(pct % 10 === 0) {
-                    details.innerHTML += "&gt;&gt; 量子加密金鑰破譯中... 位元組比對: [OK] | 鎖定軌道經緯度: " + (Math.random()*180).toFixed(4) + "°N, " + (Math.random()*90).toFixed(4) + "°E<br>";
-                    details.scrollTop = details.scrollHeight;
-                }
-                if(pct >= 100) {
-                    clearInterval(timer);
-                    details.innerHTML += "<br><span style='color:#ffffff; font-size:18px; font-weight:bold;'>🛰️ [HIJACK SUCCESS] 衛星控制鏈已成功切換！即時下行廣播影像接收中。</span><br><button onclick='backToC2()' style='background:#003300; color:#00ff00; border:1px solid #00ff00; padding:10px; margin-top:15px; cursor:pointer;'>返回主控面板</button>";
-                    details.scrollTop = details.scrollHeight;
-                }
-            }, 60);
-        }
-        
-        /* 3. 💣 自毀程序 */
-        function triggerNuke() {
-            openFxLayer();
-            fxLayer.classList.add("nuke-alert-active");
-            
-            var nukeTitle = document.createElement("div"); nukeTitle.className = "nuke-title";
-            nukeTitle.textContent = "☣️ [CRITICAL SYSTEM OVERLOAD - HOSTILE NUKE COMMAND] ☣️";
-            fxLayer.appendChild(nukeTitle);
-            
-            var nukeCount = document.createElement("div"); nukeCount.className = "nuke-countdown";
-            nukeCount.textContent = "5"; fxLayer.appendChild(nukeCount);
-            
-            var countdown = 5;
-            var timer = setInterval(function() {
-                countdown--;
-                if(countdown >= 0) nukeCount.textContent = countdown;
-                if(countdown < 0) {
-                    clearInterval(timer);
-                    nukeTitle.textContent = "💥 [CORE COLLAPSE - SERVER DESTROYED] 💥";
-                    nukeCount.style.display = "none";
-                    document.body.className = "screen-collapse"; 
-                    setTimeout(function() { location.reload(); }, 600); 
-                }
-            }, 800);
-        }
-        
-        /* 4. 🎭 換臉偽裝 */
-        function triggerClean() { openFxLayer(); fxLayer.innerHTML = "<div style='text-align:center; margin-top:30vh; font-size:20px; color:#00ff00;'>[+] 正在抹除反向連線 Session 指標...<br>[+] 正在清洗 C2 本地歷史緩衝暫存區...<br>[+] 軌跡完全清除完畢。系統即將重新啟動...</div>"; setTimeout(function() { location.reload(); }, 1200); }
-        
-        function backToC2() { fxLayer.style.display = "none"; c2Dashboard.style.display = "grid"; document.getElementById("c2-cmd-field").focus(); }
-        function logC2(text) { const p = document.createElement("p"); p.style.margin = "4px 0"; p.innerHTML = text; c2Output.appendChild(p); c2Output.scrollTop = c2Output.scrollHeight; }
-        
-        function handleC2Command(e) {
-            if (e.key === "Enter") {
-                var input = document.getElementById("c2-cmd-field"); var cmd = input.value.trim().toLowerCase(); if (!cmd) return;
-                logC2("<span style='color:#ffffff'>c2-admin# " + input.value + "</span>"); input.value = "";
-                if (cmd === "help") logC2("內建高級指令: <b>download_all</b>, <b>clear</b>");
-                else if (cmd === "download_all") logC2("[+] 建立多線程快取隊列... [■■■■■■■■■■■■■■■■] 100% 傳輸完成。");
-                else if (cmd === "clear") c2Output.innerHTML = "";
-                else logC2("[!] 指令已封裝為虛擬例外，異步盲發送至主機端...");
-            }
-        }
-        setTimeout(function() { hiddenInput.focus(); }, 200);
-    </script>
-</body>
-</html>
-"""
-
-components.html(raw_html_code, height=850)
+                div
