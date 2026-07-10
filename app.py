@@ -88,4 +88,247 @@ raw_html_code = """
         
         /* 紅警自毀排版 */
         .nuke-title { color: #ff0055; font-size: 40px; font-weight: bold; text-align: center; margin-top: 10vh; text-shadow: 0 0 20px #ff0055; animation: red-flash 0.5s infinite; }
-        .nuke-countdown { color: #ffffff; font-size: 12
+        .nuke-countdown { color: #ffffff; font-size: 120px; font-weight: bold; text-align: center; margin-top: 30px; text-shadow: 0 0 30px #ff0055; }
+        @keyframes red-flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        
+        /* 全螢幕老電視縮線崩潰特效 */
+        .screen-collapse { animation: tv-collapse 0.5s forwards ease-in; }
+        @keyframes tv-collapse {
+            0% { transform: scaleY(1) scaleX(1); filter: brightness(1); }
+            60% { transform: scaleY(0.01) scaleX(1); filter: brightness(2); background: #fff; }
+            100% { transform: scaleY(0) scaleX(0); filter: brightness(5); background: #fff; opacity: 0; }
+        }
+        
+        /* 劇烈搖晃效果 */
+        .nuke-alert-active { background: rgba(20,0,0,1) !important; animation: screen-shake 0.1s infinite !important; }
+        .shake { animation: screen-shake 0.4s linear; }
+        @keyframes screen-shake {
+            0%, 100% { transform: translate(0, 0); }
+            20% { transform: translate(-5px, 5px); }
+            40% { transform: translate(5px, -4px); }
+            60% { transform: translate(-4px, -2px); }
+            80% { transform: translate(4px, 3px); }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div id="terminal">
+        <div class="log-line">========================================================================================</div>
+        <div class="log-line">💀 遠端深層控制鏈主控台 v15.2 | 侵入成功後將自動解鎖 C2 全功能戰略面板</div>
+        <div class="log-line">========================================================================================</div>
+        <div id="dynamic-content"></div>
+        <div id="status-display" class="status-panel">目前進度: [ 🧭 PHASE 1: 初始化全網子網段探測機制... ] [0%]</div>
+        <div id="input-line">root@ghost-terminal:~# <span class="cursor"></span></div>
+    </div>
+    
+    <input type="text" id="hidden-input" autofocus>
+    
+    <div id="c2-dashboard">
+        <div class="panel-header">💀 [GHOST-NETWORK CENTRAL C2 PANEL v15.2] - ACCESS GRANTED 💀</div>
+        <div class="panel-main">
+            <div class="control-side">
+                <div style="font-weight:bold; border-bottom: 1px solid #00ff00; padding-bottom:5px; margin-bottom:5px;">[ 戰略後門操控模組 ]</div>
+                <button class="interactive-btn" onclick="triggerDump()">📂 數據導出 (Dump User Credentials)</button>
+                <button class="interactive-btn" onclick="triggerSatellite()">卫星劫持 (Hijack Orbital Satellite)</button>
+                <button class="interactive-btn" onclick="triggerClean()">🎭 換臉偽裝 (Wipe Terminal Traces)</button>
+                <button class="interactive-btn" style="border-color:#ff0055; color:#ff0055;" onclick="triggerNuke()">💣 自毀程序 (Nuke Mainframe Server)</button>
+                <div style="font-size:12px; color:#00aa00; margin-top:auto;">系統狀態: 在線 (ENCRYPTED)<br>中繼節點: SOCKS5://103.24.51.9</div>
+            </div>
+            <div class="console-side">
+                <div class="console-output" id="c2-output">
+                    [SYSTEM] 成功對接主機。點擊左側按鈕即可切換至【獨立全黑底特效模式】下達戰略威脅...<br>
+                    提示指令：help, download_all, clear
+                </div>
+                <div class="console-input-area">
+                    <span>c2-admin#</span>
+                    <input type="text" class="c2-input" id="c2-cmd-field" placeholder="輸入內部指令並按 Enter..." onkeydown="handleC2Command(event)">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="fullscreen-fx-layer"></div>
+    
+    <script>
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resizeCanvas(); window.addEventListener("resize", resizeCanvas);
+        
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789🧬💀🛰️🔥🔓🚀💥⚡🛸⚙️☣️";
+        var alphabet = chars.split("");
+        var columns = canvas.width / 16;
+        var rainDrops = Array(Math.floor(columns)).fill(1);
+        var mouseParticles = [];
+        
+        window.addEventListener("mousemove", function(e) {
+            if (Math.random() > 0.4) {
+                mouseParticles.push({ x: e.clientX, y: e.clientY, text: alphabet[Math.floor(Math.random() * alphabet.length)], alpha: 1.0, size: 14 });
+            }
+        });
+        
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.06)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0F0"; ctx.font = "16px monospace";
+            for (var i = 0; i < rainDrops.length; i++) {
+                var text = alphabet[Math.floor(Math.random() * alphabet.length)];
+                ctx.fillText(text, i * 16, rainDrops[i] * 16);
+                if (rainDrops[i] * 16 > canvas.height && Math.random() > 0.98) rainDrops[i] = 0;
+                rainDrops[i]++;
+            }
+            for (var i = 0; i < mouseParticles.length; i++) {
+                var p = mouseParticles[i]; ctx.fillStyle = "rgba(0, 255, 0, " + p.alpha + ")";
+                ctx.font = "bold " + p.size + "px monospace"; ctx.fillText(p.text, p.x, p.y);
+                p.alpha -= 0.02; p.y += 0.5;
+            }
+            mouseParticles = mouseParticles.filter(function(p) { return p.alpha > 0; });
+        }
+        setInterval(drawMatrix, 33);
+        
+        var terminal = document.getElementById("terminal");
+        var dynamicContent = document.getElementById("dynamic-content");
+        var hiddenInput = document.getElementById("hidden-input");
+        var statusDisplay = document.getElementById("status-display");
+        var c2Dashboard = document.getElementById("c2-dashboard");
+        var fxLayer = document.getElementById("fullscreen-fx-layer");
+        var c2Output = document.getElementById("c2-output");
+        
+        var lineCount = 0; var isUnlocked = false; var maxLines = 500;
+        function triggerTerminalShake() { terminal.classList.add("shake"); setTimeout(function() { terminal.classList.remove("shake"); }, 400); }
+        
+        function appendNewLine() {
+            if (isUnlocked) return;
+            if (lineCount >= maxLines) {
+                isUnlocked = true; terminal.style.display = "none";
+                c2Dashboard.style.display = "grid";
+                document.getElementById("c2-cmd-field").focus();
+                return;
+            }
+            if (Math.random() < 0.04) {
+                triggerTerminalShake();
+                var div = document.createElement("div"); div.className = "log-line critical-alert";
+                div.textContent = "[CRITICAL ALERT] !!! DETECTION WARNING: FIREWALL COUNTERMEASURE TRIGGERED... BYPASSING !!!";
+                dynamicContent.appendChild(div); lineCount++;
+            } else {
+                var div = document.createElement("div"); div.className = "log-line";
+                div.textContent = "[SYSTEM_CORE] [OK] 注入核心控制流協定因子，正在重構核心記憶體指標...";
+                dynamicContent.appendChild(div); lineCount++;
+            }
+            var pct = Math.floor((lineCount / maxLines) * 100);
+            statusDisplay.textContent = "目前進度: [ ⚡ PHASE " + (Math.floor(pct/20)+1) + ": 核心矩陣協議破解中... ] [" + pct + "%]";
+            document.getElementById("input-line").scrollIntoView({ behavior: "smooth", block: "end" });
+        }
+        
+        document.body.addEventListener("click", function() { if(!isUnlocked) hiddenInput.focus(); });
+        document.addEventListener("keydown", function(e) {
+            if (!isUnlocked && e.key !== "Shift" && e.key !== "Control" && e.key !== "Alt" && e.key !== "Meta") {
+                for(var i=0; i<5; i++) { appendNewLine(); }
+            }
+        });
+        
+        function openFxLayer() { c2Dashboard.style.display = "none"; fxLayer.style.display = "block"; fxLayer.innerHTML = ""; fxLayer.className = ""; }
+        
+        /* 1. 📂 數據導出 -> 切回全黑底 + 瀑布滾動流 */
+        function triggerDump() {
+            openFxLayer();
+            var count = 0;
+            var timer = setInterval(function() {
+                var d = document.createElement("div");
+                d.style.color = "#33ff33"; d.style.fontSize = "14px"; d.style.marginBottom = "2px";
+                d.textContent = "[STREAM_DUMP] UID_" + Math.floor(Math.random()*89999+10000) + " | IP: " + Math.floor(Math.random()*254+1) + "." + Math.floor(Math.random()*254) + ".71." + Math.floor(Math.random()*254) + " | PASS_HASH: " + Math.random().toString(16).substring(2,15).toUpperCase() + " | EXPORT: SUCCESS";
+                fxLayer.appendChild(d);
+                fxLayer.scrollTop = fxLayer.scrollHeight;
+                count++;
+                if(count >= 150) { 
+                    clearInterval(timer);
+                    var endMsg = document.createElement("div");
+                    endMsg.style.color = "#00ff00"; endMsg.style.fontSize = "20px"; endMsg.style.marginTop = "20px"; endMsg.style.fontWeight = "bold";
+                    endMsg.innerHTML = "<br>💀 [DATA EXPORT COMPLETE] 數萬筆核心個資與密碼庫已完全拖庫快取成功。<br><button onclick='backToC2()' style='background:#003300; color:#00ff00; border:1px solid #00ff00; padding:10px; margin-top:15px; cursor:pointer;'>返回主控面板</button>";
+                    fxLayer.appendChild(endMsg);
+                    fxLayer.scrollTop = fxLayer.scrollHeight;
+                }
+            }, 25);
+        }
+        
+        /* 2. 🛰️ 衛星劫持 -> 切回全黑底 + 繞軌連線進度 */
+        function triggerSatellite() {
+            openFxLayer();
+            var pct = 0;
+            var container = document.createElement("div");
+            container.style.textAlign = "center"; container.style.marginTop = "15vh";
+            container.innerHTML = '<h2 style="letter-spacing:3px;">🛰️ [ORBITAL SATELLITE HIJACK PROTOCOL]</h2>' +
+                                   '<div style="font-size:16px; color:#00aa00; margin-bottom:20px;">正在向低軌道衛星網段下發虛擬控制信號...</div>' +
+                                   '<div id="sat-progress-bar" style="width:60%; margin:0 auto; border:1px solid #00ff00; padding:3px; text-align:left;"><div id="sat-fill" style="width:0%; background:#00ff00; height:20px;"></div></div>' +
+                                   '<div id="sat-pct" style="margin-top:10px; font-size:24px;">0%</div>' +
+                                   '<div id="sat-details" style="margin-top:30px; font-size:14px; text-align:left; width:50%; margin-left:auto; margin-right:auto; color:#33ff33;"></div>';
+            fxLayer.appendChild(container);
+            
+            var fill = document.getElementById("sat-fill");
+            var pctText = document.getElementById("sat-pct");
+            var details = document.getElementById("sat-details");
+            
+            var timer = setInterval(function() {
+                pct += 2;
+                fill.style.width = pct + "%";
+                pctText.textContent = pct + "%";
+                if(pct % 10 === 0) {
+                    details.innerHTML += "&gt;&gt; 正在覆寫地面站同步鎖定軌道 經度: " + (Math.random()*180).toFixed(4) + " 緯度: " + (Math.random()*90).toFixed(4) + "... OK<br>";
+                }
+                if(pct >= 100) {
+                    clearInterval(timer);
+                    details.innerHTML += "<br><span style='color:#ffffff; font-size:18px; font-weight:bold;'>🛰️ [HIJACK SUCCESS] 衛星控制鏈已成功切換！下行通訊廣播權已完全奪取。</span><br><button onclick='backToC2()' style='background:#003300; color:#00ff00; border:1px solid #00ff00; padding:10px; margin-top:15px; cursor:pointer;'>返回主控面板</button>";
+                }
+            }, 60);
+        }
+        
+        /* 3. 💣 自毀程序 -> 切回全黑底 + 紅警強烈閃爍 + 電視縮線崩潰 */
+        function triggerNuke() {
+            openFxLayer();
+            fxLayer.classList.add("nuke-alert-active");
+            
+            var nukeTitle = document.createElement("div"); nukeTitle.className = "nuke-title";
+            nukeTitle.textContent = "☣️ [CRITICAL SYSTEM OVERLOAD - HOSTILE NUKE COMMAND] ☣️";
+            fxLayer.appendChild(nukeTitle);
+            
+            var nukeCount = document.createElement("div"); nukeCount.className = "nuke-countdown";
+            nukeCount.textContent = "5"; fxLayer.appendChild(nukeCount);
+            
+            var countdown = 5;
+            var timer = setInterval(function() {
+                countdown--;
+                if(countdown >= 0) nukeCount.textContent = countdown;
+                if(countdown < 0) {
+                    clearInterval(timer);
+                    nukeTitle.textContent = "💥 [CORE COLLAPSE - SERVER DESTROYED] 💥";
+                    nukeCount.style.display = "none";
+                    document.body.className = "screen-collapse"; 
+                    setTimeout(function() { location.reload(); }, 600); 
+                }
+            }, 800);
+        }
+        
+        /* 4. 🎭 換臉偽裝 */
+        function triggerClean() { openFxLayer(); fxLayer.innerHTML = "<div style='text-align:center; margin-top:30vh; font-size:20px; color:#00ff00;'>[+] 正在抹除反向連線 Session 指標...<br>[+] 正在清洗 C2 本地歷史緩衝暫存區...<br>[+] 軌跡完全清除完畢。系統即將重新啟動...</div>"; setTimeout(function() { location.reload(); }, 1200); }
+        
+        function backToC2() { fxLayer.style.display = "none"; c2Dashboard.style.display = "grid"; document.getElementById("c2-cmd-field").focus(); }
+        function logC2(text) { const p = document.createElement("p"); p.style.margin = "4px 0"; p.innerHTML = text; c2Output.appendChild(p); c2Output.scrollTop = c2Output.scrollHeight; }
+        
+        function handleC2Command(e) {
+            if (e.key === "Enter") {
+                var input = document.getElementById("c2-cmd-field"); var cmd = input.value.trim().toLowerCase(); if (!cmd) return;
+                logC2("<span style='color:#ffffff'>c2-admin# " + input.value + "</span>"); input.value = "";
+                if (cmd === "help") logC2("內建高級指令: <b>download_all</b>, <b>clear</b>");
+                else if (cmd === "download_all") logC2("[+] 建立多線程快取隊列... [■■■■■■■■■■■■■■■■] 100% 傳輸完成。");
+                else if (cmd === "clear") c2Output.innerHTML = "";
+                else logC2("[!] 指令已封裝為虛擬例外，異步盲發送至主機端...");
+            }
+        }
+        setTimeout(function() { hiddenInput.focus(); }, 200);
+    </script>
+</body>
+</html>
+"""
+
+components.html(raw_html_code, height=850)
