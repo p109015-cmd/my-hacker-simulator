@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # 1. 網頁頁面初始化設定
-st.set_page_config(page_title="究極黑客控制台 v10.7", page_icon="💀", layout="wide")
+st.set_page_config(page_title="究極黑客控制台 v10.8", page_icon="💀", layout="wide")
 
 # 強制隱藏 Streamlit 的所有原生網頁元件，達成全螢幕純黑客視窗
 st.markdown(
@@ -15,8 +15,8 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# 2. 採用「純拼接字串」架構，徹底杜絕 Python 任何大括號與轉義解析漏洞
-html_top = """
+# 2. 注入完全去反斜線、無大括號漏洞的終極網頁控制引擎
+html_code = """
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -169,11 +169,13 @@ html_top = """
         let lineCount = 0; 
         let isUnlocked = false; 
 
+        // 自動向下滑動滾動機制
         const observer = new MutationObserver(() => {
             terminal.scrollTop = terminal.scrollHeight;
         });
         observer.observe(terminal, { childList: true, subtree: true });
 
+        // 放棄使用所有包含反斜線的 \\n，改用陣列結合方式動態回傳換行代碼
         function generateRandomHackerLine() {
             lineCount++; 
             const hexAddr = '0x' + Math.floor(Math.random() * 16777215).toString(16).toUpperCase() + 
@@ -181,29 +183,31 @@ html_top = """
             const rand = Math.random();
             
             if (rand < 0.35) {
-                return '\\n[' + tags[Math.floor(Math.random() * tags.length)] + '] [MEM:' + hexAddr + '] ' + actions[Math.floor(Math.random() * actions.length)] + ' >> 目標: ' + targets[Math.floor(Math.random() * targets.length)] + '...';
+                const tag = tags[Math.floor(Math.random() * tags.length)];
+                const action = actions[Math.floor(Math.random() * actions.length)];
+                const target = targets[Math.floor(Math.random() * targets.length)];
+                return ['', '[' + tag + '] [MEM:' + hexAddr + '] ' + action + ' >> 目標: ' + target + '...'].join(String.fromCharCode(10));
             } else if (rand < 0.7) {
-                return '\\n[CODE_STR] [ADDR:' + hexAddr + ']  ' + scripts_pool[Math.floor(Math.random() * scripts_pool.length)];
+                const code = scripts_pool[Math.floor(Math.random() * scripts_pool.length)];
+                return ['', '[CODE_STR] [ADDR:' + hexAddr + ']  ' + code].join(String.fromCharCode(10));
             } else {
                 const progress = '■'.repeat(Math.floor(Math.random() * 15) + 10);
                 const percent = Math.floor(Math.random() * 40) + 60;
-                return '\\n[DECRYPT] [BLOCK:' + hexAddr + '] 演算破解中 [' + progress + '] ' + percent + '% SUCCESS...';
+                return ['', '[DECRYPT] [BLOCK:' + hexAddr + '] 演算破解中 [' + progress + '] ' + percent + '% SUCCESS...'].join(String.fromCharCode(10));
             }
         }
-"""
 
-# 用完全無害的純字串相加，繞開所有可能導致 unterminated string 錯誤的換行編譯問題
-html_text_lines = (
-    "==================================================================\n"
-    "💀 首席網路安全專家：[REDACTED] | 核心作戰控制終端 v10.7\n"
-    "==================================================================\n"
-    ">> CORE STATUS: READY\n"
-    ">> INFILTRATION LEVEL: INITIALIZED\n\n"
-    "root@ghost-terminal:~# <span class='cursor'></span>"
-)
-
-html_bottom = """
-        let currentText = """ + repr(html_text_lines) + """;
+        // 初始化頂部冷酷日誌面板（利用 join 拼接換行，完全避開反斜線）
+        let currentText = [
+            "==================================================================",
+            "💀 首席網路安全專家：[REDACTED] | 核心作戰控制終端 v10.8",
+            "==================================================================",
+            ">> CORE STATUS: READY",
+            ">> INFILTRATION LEVEL: INITIALIZED",
+            "",
+            "root@ghost-terminal:~# <span class='cursor'></span>"
+        ].join(String.fromCharCode(10));
+        
         terminal.innerHTML = currentText;
 
         let currentLineBuffer = "";
@@ -224,7 +228,8 @@ html_bottom = """
                 }
 
                 let nextChar = currentLineBuffer.charAt(bufferCharIndex);
-                if (nextChar === '\\n') {
+                // 使用編碼偵測換行並轉換成網頁 HTML 斷行標籤
+                if (nextChar.charCodeAt(0) === 10) {
                     nextChar = '<br>';
                 }
 
@@ -234,19 +239,20 @@ html_bottom = """
             }
         }
 
+        // 滑鼠點擊畫面的任何一處都會強制幫隱藏的輸入框聚焦，確保 100% 響應鍵盤
         document.body.addEventListener('click', () => { hiddenInput.focus(); });
         document.addEventListener('keydown', (e) => {
             if (e.key !== 'Shift' && e.key !== 'Control' && e.key !== 'Alt' && e.key !== 'Meta') {
                 autoTypeHackerCode();
             }
         });
+        
+        // 首次載入自動獲取輸入焦點
+        setTimeout(() => { hiddenInput.focus(); }, 200);
     </script>
 </body>
 </html>
 """
 
-# 組合最終網頁程式碼
-final_html = html_top + html_bottom
-
-# 3. 渲染終極控制台
-components.html(final_html, height=1000, scrolling=False)
+# 3. 渲染網頁元件
+components.html(html_code, height=1000, scrolling=False)
