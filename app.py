@@ -2,27 +2,25 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # 1. 網頁頁面初始化設定
-st.set_page_config(page_title="賴以航 究極黑客控制台 v8.0", page_icon="💀", layout="wide")
+st.set_page_config(page_title="賴以航 究極黑客控制台 v9.0", page_icon="💀", layout="wide")
 
-# 強制隱藏 Streamlit 的所有原生網頁元件，只留下全螢幕黑客視窗
+# 強制隱藏 Streamlit 的所有原生網頁元件，達成全螢幕純黑客視窗
 st.markdown("""
     <style>
-    /* 隱藏網頁標頭、漢堡選單、底部註腳 */
     [data-testid="stHeader"], footer, #MainMenu {visibility: hidden !important;}
     .stApp {background-color: #000000 !important;}
-    /* 移除邊距，達成真正全螢幕 */
     .block-container {padding: 0px !important; max-width: 100% !important;}
     iframe {display: block; border: none;}
     </style>
 """, unsafe_allow_html=True)
 
-# 2. 注入好萊塢級別的「真．黑客終端與 Matrix 數位雨」互動組件
+# 2. 注入永不重複的「動態混亂矩陣代碼生成引擎」
 html_code = """
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>Matrix Terminal</title>
+    <title>Matrix Terminal Infinite</title>
     <style>
         * { box-sizing: border-box; }
         body, html {
@@ -41,7 +39,7 @@ html_code = """
             top: 0;
             left: 0;
             z-index: 1;
-            opacity: 0.25; /* 讓背景雨淡淡的，不干擾文字閱讀 */
+            opacity: 0.2;
         }
         /* 終端機文字顯示層 */
         #terminal {
@@ -53,12 +51,12 @@ html_code = """
             z-index: 2;
             padding: 25px;
             color: #00ff00;
-            font-size: 18px;
-            line-height: 1.5;
+            font-size: 17px;
+            line-height: 1.6;
             overflow-y: auto;
             white-space: pre-wrap;
             word-wrap: break-word;
-            text-shadow: 0 0 5px #00ff00;
+            text-shadow: 0 0 4px #00ff00;
         }
         /* 游標閃爍特效 */
         .cursor {
@@ -73,7 +71,6 @@ html_code = """
             0%, 49% { background-color: #00ff00; }
             50%, 100% { background-color: transparent; }
         }
-        /* 隱藏真正用來觸發的手機/網頁輸入，全靠鍵盤監聽 */
         #hidden-input {
             position: absolute;
             opacity: 0;
@@ -84,12 +81,11 @@ html_code = """
 <body>
 
     <canvas id="canvas"></canvas>
-
     <div id="terminal"></div>
     <input type="text" id="hidden-input" autofocus>
 
     <script>
-        // === 1. 經典 Matrix 數位雨動畫引擎 ===
+        // === 1. 經典 Matrix 數位雨引擎 ===
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
@@ -100,28 +96,21 @@ html_code = """
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        const katakana = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789🧬💀🛰️🔥🔓🚀💥⚡";
-        const alphabet = katakana.split("");
-
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789🧬💀🛰️🔥🔓🚀💥⚡";
+        const alphabet = chars.split("");
         const fontSize = 16;
         let columns = canvas.width / fontSize;
-
-        const rainDrops = [];
-        for (let x = 0; x < columns; x++) {
-            rainDrops[x] = 1;
-        }
+        const rainDrops = Array(Math.floor(columns)).fill(1);
 
         function drawMatrix() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
             ctx.fillStyle = '#0F0';
             ctx.font = fontSize + 'px monospace';
 
             for (let i = 0; i < rainDrops.length; i++) {
                 const text = alphabet[Math.floor(Math.random() * alphabet.length)];
                 ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-
                 if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                     rainDrops[i] = 0;
                 }
@@ -131,98 +120,69 @@ html_code = """
         setInterval(drawMatrix, 30);
 
 
-        // === 2. 究極模擬黑客自動碼生成引擎 ===
+        // === 2. 【核心升級】永不重複・隨機代碼拼裝演算法 ===
         const terminal = document.getElementById('terminal');
         const hiddenInput = document.getElementById('hidden-input');
 
-        // 電影級駭客日誌庫
-        const hackerScripts = [
-            "\\n[SYSTEM] 初始化首席網路安全專家：賴以航 (Yi-Hang Lai) 的專屬核心協定...",
-            "\\n[CONNECT] 正在嘗試透過 256 位元洋蔥路由繞過各國防火牆網閘...",
-            "\\n[INFO] 成功在 0x7FFF8B40 建立虛擬通道 -> Proxy: SOCKS5://103.24.51.9",
-            "\\n[BYPASS] 偵測到 Cloudflare 高階 WAF 防禦防護層，啟動「流式代碼動態偽裝」技術...",
-            "\\n[STATUS] 防火牆已成功繞過！(Bypass 100%) 進駐核心主控台。",
-            "\\n[SCAN] 正在對 nasa.gov.secure 進行全面埠位掃描：",
-            "       -> Port 80 (HTTP)    .... [OPEN]",
-            "       -> Port 443 (HTTPS)  .... [SECURE]",
-            "       -> Port 22 (SSH)     .... [VULNERABLE - EXPLOIT READY!]",
-            "\\n[INJECT] 正在向 Port 22 注入隱形木馬程式 (Backdoor.Trojan.Lai.v8)...",
-            "\\n[DATABASE] 攔截核心加密資料庫節點封包，正在下載資料群組：",
-            "           Progress: [■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■] 100% SECURE_LOG.DB",
-            "\\n[DECRYPT] 啟動量子演算矩陣，嘗試暴力破解管理員密碼...",
-            "          解密嘗試中... 0x9A4F... 0x11BC... 0x77EE...",
-            "\\n[SUCCESS] 密碼解密破譯成功！ 系統密碼已重設為: LaiHang2026ProMatrix",
-            "\\n[ACCESS] 成功獲取最高主機 Root 系統管理員權限！",
-            "\\n[WARN] 偵測到反向追蹤異常警告！防衛機制啟動，自動刪除系統足跡(Logs)...",
-            "\\n[CLEAR] 歷史日誌抹除完畢。任務完美達成。系統進入待命模式。"
+        // 建立元件庫，讓 JavaScript 即時隨機組裝
+        const tags = ["INFO", "WARN", "SYSTEM", "INJECT", "DECRYPT", "BYPASS", "CONNECT", "EXPLOIT", "TRACE_ALERT"];
+        const actions = [
+            "正在偵測通訊埠漏洞", "成功繞過防火牆安全認證層", "攔截核心加密資料庫封包", 
+            "正在注入隱形後門 Trojan.Lai", "啟動量子演算法破解私鑰", "成功切換虛擬本地代理網段", 
+            "遠端溢位攻擊成功", "正在強制同步資料傳輸緩衝區", "核心偽裝層部署完畢", "全面癱瘓伺服器流量"
         ];
+        const targets = [
+            "nasa.gov.secure", "pentagon.admin.node", "mainframe.central.bank", "global.dns.server", 
+            "crypto.vault.ledger", "security.gateway.firewall", "backbone.root.switch", "cloud.matrix.core"
+        ];
+        const scripts_pool = [
+            "for (int i = 0; i < 1024; i++) { malloc(sizeof(payload)); }",
+            "connect_to_proxy_node('SOCKS5://103.24.51.9', port=22);",
+            "if (auth_token == 'BYPASS_TRUE') { grant_root_access(); }",
+            "AES_256_Decrypt(key_matrix, cipher_text, chunk_size=4096);",
+            "iptables -A INPUT -s 127.0.0.1 -j DROP # Erasing footprints",
+            "send_packet_stream(target_ip, protocol='UDP', packets=250000);",
+            "void* kernel_ptr = (void*)(0x7FFF" + Math.floor(Math.random()*100000) + ");"
+        ];
+
+        // 產生完全隨機、絕不重樣的一行黑客代碼
+        function generateRandomHackerLine() {
+            const rand = Math.random();
+            const hexAddr = "0x" + Math.floor(Math.random() * 16777215).toString(16).toUpperCase() + 
+                            Math.floor(Math.random() * 16777215).toString(16).toUpperCase();
+            
+            if (rand < 0.35) {
+                // 類型 A：系統日誌風
+                const tag = tags[Math.floor(Math.random() * tags.length)];
+                const action = actions[Math.floor(Math.random() * actions.length)];
+                const target = targets[Math.floor(Math.random() * targets.length)];
+                return `\\n[${tag}] [MEM:${hexAddr}] ${action} >> 目標: ${target}...`;
+            } else if (rand < 0.7) {
+                // 類型 B：底層偽原始碼風
+                return `\\n[CODE_STR] [ADDR:${hexAddr}]  ` + scripts_pool[Math.floor(Math.random() * scripts_pool.length)];
+            } else {
+                // 類型 C：記憶體進度與解密矩陣風
+                const progress = "■".repeat(Math.floor(Math.random() * 15) + 10) + " ".repeat(5);
+                const percent = Math.floor(Math.random() * 40) + 60;
+                return `\\n[DECRYPT] [BLOCK:${hexAddr}] 演算破解中 [${progress}] ${percent}% SUCCESS...`;
+            }
+        }
 
         // 初始歡迎詞
         let currentText = "==================================================================\\n" +
-                          "💀 首席網路安全專家：賴以航 (Yi-Hang Lai) | 黑客任務控制終端 v8.0\\n" +
+                          "💀 首席網路安全專家：賴以航 (Yi-Hang Lai) | 無限矩陣控制終端 v9.0\\n" +
                           "==================================================================\\n" +
-                          ">> 系統已進入高度隱密狀態。\\n" +
-                          ">> 【真・黑客提示】：請隨意在鍵盤上敲擊任意字母或按鍵！代碼會自動流出...\\n\\n" +
+                          ">> SYSTEM STATUS: LIVE CONSOLE ACTIVE\\n" +
+                          ">> 【真・無限模式】：請瘋狂敲擊鍵盤，程式碼皆為即時隨機組裝，永不重複！\\n\\n" +
                           "lai-hang@matrix-terminal:~# <span class='cursor'></span>";
         
         terminal.innerHTML = currentText;
 
-        let scriptIndex = 0;
-        let charIndex = 0;
-        let isTyping = false;
+        let currentLineBuffer = "";
+        let bufferCharIndex = 0;
 
-        // 當使用者敲擊鍵盤時，自動傾洩一段帥氣代碼
         function autoTypeHackerCode() {
-            if (scriptIndex >= hackerScripts.length) {
-                // 放煙火或循環
-                scriptIndex = 0;
-            }
-
-            // 取得目前應該跑的那一段話
-            let chunk = hackerScripts[scriptIndex];
-            
-            // 每次敲鍵盤，吐出 3 個字元，速度更快更有爽快感
-            for(let k = 0; k < 4; k++) {
-                if (charIndex < chunk.length) {
-                    let nextChar = chunk.charAt(charIndex);
-                    
-                    // 處理換行或特殊符號
-                    if (nextChar === '\\n') {
-                        nextChar = '<br>';
-                    }
-                    
-                    // 拔掉游標，塞入字元，補回游標
-                    let base = terminal.innerHTML.replace("<span class=\\"cursor\\"></span>", "");
-                    terminal.innerHTML = base + nextChar + "<span class=\\"cursor\\"></span>";
-                    charIndex++;
-                } else {
-                    // 這一段吐完了，換下一段
-                    scriptIndex++;
-                    charIndex = 0;
-                    break;
-                }
-            }
-            
-            // 自動滾動到最底端
-            terminal.scrollTop = terminal.scrollHeight;
-        }
-
-        // 保持焦點在輸入監聽上
-        document.body.addEventListener('click', () => {
-            hiddenInput.focus();
-        });
-        
-        // 核心監聽：只要有按鍵按下，就執行自動代碼生成
-        document.addEventListener('keydown', (e) => {
-            // 排除單純的功能鍵不觸發
-            if (e.key !== 'Shift' && e.key !== 'Control' && e.key !== 'Alt' && e.key !== 'Meta') {
-                autoTypeHackerCode();
-            }
-        });
-    </script>
-</body>
-</html>
-"""
-
-# 3. 渲染全螢幕視窗（高度設定為 1000 像素，填滿大部分桌面螢幕）
-components.html(html_code, height=1000, scrolling=False)
+            // 每次敲鍵盤，吐出 4 個字元，達到極速流暢敲代碼快感
+            for (let k = 0; k < 5; k++) {
+                // 如果目前快取的隨機字串吐完了，就立刻生成全新的一行
+                if (!
