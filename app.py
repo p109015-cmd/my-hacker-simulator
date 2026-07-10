@@ -5,7 +5,7 @@ import random
 # 1. 網頁頁面初始化設定
 st.set_page_config(page_title="賴以航 終極黑客控制台 Pro+", page_icon="💀", layout="centered")
 
-# --- 🎯 終極視覺魔法：強行覆蓋全網頁為純黑底螢光綠字 ---
+# --- 🎯 終極視覺魔法：強制覆蓋全網頁為純黑底螢光綠字 ---
 st.markdown("""
     <style>
     /* 全網頁底色與主文字 */
@@ -48,14 +48,14 @@ st.markdown("""
     button:hover, div.stButton > button:hover {
         background-color: #00FF00 !important;
         color: #000000 !important;
-        box-shadow: 0 0 10px #00FF00 !important;
+        box-shadow: 0 0 15px #00FF00 !important;
     }
     
     /* 強化 code 區塊的黑底綠字效果 */
     code, pre {
-        background-color: #111111 !important;
+        background-color: #050505 !important;
         color: #00FF00 !important;
-        border: 1px solid #003300 !important;
+        border: 1px solid #005500 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -63,9 +63,9 @@ st.markdown("""
 # --- 【核心開發者：賴以航 原生控制台區塊】 ---
 with st.container(border=True):
     st.subheader("💀 首席網路安全專家：賴以航 (Yi-Hang Lai)")
-    st.caption("⚡ SYSTEM STATUS: INFILTRATING... | 核心技術：動態流式代碼偽裝與密碼矩陣破譯")
+    st.caption("⚡ SYSTEM STATUS: INFILTRATING... | 核心技術：動態流式代碼偽裝與密碼批次破譯")
 
-st.title("💻 駭客任務控制終端 Matrix v6.0")
+st.title("💻 駭客任務控制終端 Matrix v7.0")
 st.write(">> 警告：本終端已全面進入高度隱密模式，所有傳輸數據皆過濾為經典矩陣視訊。")
 st.write("---")
 
@@ -140,7 +140,7 @@ if cmd_input:
 
 st.write("---")
 
-# 5. 終端機動態串流 (修正了未閉合括號的重災區)
+# 5. 【核心升級：極逼真打字機串流主引擎】
 st.markdown("### 📟 即時網路數據串流緩衝區 (Live Console)")
 
 hacker_logs = [
@@ -151,18 +151,33 @@ hacker_logs = [
     "💾 [DATABASE] 攔截核心資料庫封包 >> 成功下載 encrypted_ledger.db (100%)",
     "🚨 [WARNING] 偵測到反向追蹤防禦！正在緊急重導向至虛擬網段...",
     "💻 [ROOT] 成功獲取目標主機系統最高管理員權限 (Root Access Granted)！",
-    "🛠️ [INJECT] 隱形後門程式 (Backdoor.Trojan.Lai.v6) 植入完畢。"
+    "🛠️ [INJECT] 隱形後門程式 (Backdoor.Trojan.Lai.v7) 植入完畢。"
 ]
 
 if st.button("🖥️ 啟動代碼滲透串流 (Live Stream)", use_container_width=True):
-    st.write(">> 正在與遠端伺服器同步日誌：")
-    for _ in range(10):
-        random_log = random.choice(hacker_logs)
-        with st.chat_message("assistant", avatar="💀"):
-            st.code(random_log, language="bash")
-        time.sleep(0.1)
+    st.write(">> 正在建立連線，同步安全日誌...")
+    
+    # 建立一個動態容器
+    terminal_placeholder = st.empty()
+    running_output = ""
+    
+    # 一行一行抓出來
+    for _ in range(6):
+        random_log = random.choice(hacker_logs) + "\n"
+        mem_address = f"[MEM_ADDR: 0x{random.randint(2147483647, 9147483647):X}] "
+        full_line = ">> " + mem_address + random_log
+        
+        # 🟢 打字機特效：一個字元一個字元吐出來！
+        for char in full_line:
+            running_output += char
+            # 用 st.code 渲染，強制造型為 Bash 風格
+            terminal_placeholder.code(running_output, language="bash")
+            time.sleep(0.01) # 控制打字速度，越小越快
+            
+        time.sleep(0.2) # 每行字打完停頓一下
+        
     st.success("🎯 終端任務執行完畢。所有足跡已完全抹除。")
 
 st.write("\n---")
-st.caption("⚡ Powered by Streamlit Components & Logic Engine")
+st.caption("⚡ Powered by Streamlit Components & Typewriter Stream Engine")
 st.caption("© 2026 賴以航 (Yi-Hang Lai). Confidential Hack Terminal. All rights reserved.")
