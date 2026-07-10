@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # 1. 網頁頁面初始化設定
-st.set_page_config(page_title="賴以航 究極黑客控制台 v10.0", page_icon="💀", layout="wide")
+st.set_page_config(page_title="賴以航 究極黑客控制台 v10.1", page_icon="💀", layout="wide")
 
 # 強制隱藏 Streamlit 的所有原生網頁元件，達成全螢幕純黑客視窗
 st.markdown("""
@@ -14,7 +14,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 2. 注入永不重複、自動滿頁滾動、敲擊到程度顯示成功的「數位矩陣控制引擎」
+# 2. 注入永不重複、修正「全自動滿頁滑動」與「解鎖觸發」的數位矩陣控制引擎
 html_code = """
 <!DOCTYPE html>
 <html lang="zh-TW">
@@ -53,12 +53,12 @@ html_code = """
             color: #00ff00;
             font-size: 18px;
             line-height: 1.6;
-            overflow-y: scroll; /* 允許垂直滾動 */
+            overflow-y: auto; /* 允許垂直滾動 */
             white-space: pre-wrap;
             word-wrap: break-word;
             text-shadow: 0 0 4px #00ff00;
         }
-        /* 隱藏滾動條，讓畫面看起來更像純粹的核心終端 */
+        /* 隱藏滾動條，讓畫面看起來更像純核心終端 */
         #terminal::-webkit-scrollbar {
             display: none;
         }
@@ -83,7 +83,7 @@ html_code = """
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 999;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.95);
             border: 3px solid #00ff00;
             padding: 40px;
             text-align: center;
@@ -110,7 +110,7 @@ html_code = """
         💀 [SYSTEM UNLOCKED] 💀<br>
         ========================================<br>
         ACCESS GRANTED // 核心控制權限獲取成功！<br>
-        指揮官：賴以航 (Yi-Hang Lai) 已接管系統。
+        指揮官：你已接管系統。
     </div>
 
     <script>
@@ -149,7 +149,7 @@ html_code = """
         setInterval(drawMatrix, 30);
 
 
-        // === 2. 永不重複隨機代碼 + 自動滾動 + 成功觸發引擎 ===
+        // === 2. 隨機代碼 + 修正版強效滾動與解鎖引擎 ===
         const terminal = document.getElementById('terminal');
         const hiddenInput = document.getElementById('hidden-input');
         const successOverlay = document.getElementById('success-overlay');
@@ -173,11 +173,19 @@ html_code = """
             'send_packet_stream(target_ip, protocol=\\'UDP\\', packets=250000);'
         ];
 
-        let lineCount = 0; // 計算使用者敲了多少行代碼
-        let isUnlocked = false; // 是否已經成功解鎖
+        let lineCount = 0; 
+        let isUnlocked = false; 
+
+        // 🛠️ 【核心修復功能】：利用瀏覽器原生的 MutationObserver
+        // 只要 terminal 內的 HTML 內容有任何一丁點改變，就強制瞬間滾動到最底部！
+        const observer = new MutationObserver(() => {
+            terminal.scrollTop = terminal.scrollHeight;
+        });
+        observer.observe(terminal, { childList: true, subtree: true });
+
 
         function generateRandomHackerLine() {
-            lineCount++; // 每生成一行，計數器加 1
+            lineCount++; 
             const hexAddr = '0x' + Math.floor(Math.random() * 16777215).toString(16).toUpperCase() + 
                             Math.floor(Math.random() * 16777215).toString(16).toUpperCase();
             const rand = Math.random();
@@ -198,12 +206,11 @@ html_code = """
 
         // 歡迎公告
         let currentText = "==================================================================\\n" +
-                          "💀 首席網路安全專家：賴以航 (Yi-Hang Lai) | 無限矩陣控制終端 v10.0\\n" +
+                          "💀 首席網路安全專家： 無限矩陣控制終端 v10.1\\n" +
                           "==================================================================\\n" +
-                          ">> SYSTEM STATUS: LIVE CONSOLE ACTIVE\\n" +
-                          ">> 【動態自動滾動】：頁面寫滿時，終端機會全自動流暢向下滑動！\\n" +
+                         
                           ">> 【入侵目標設定】：持續敲擊鍵盤，進度達 100% 後將觸發成功解鎖。\\n\\n" +
-                          "lai-hang@matrix-terminal:~# <span class='cursor'></span>";
+                        
         
         terminal.innerHTML = currentText;
 
@@ -211,16 +218,16 @@ html_code = """
         let bufferCharIndex = 0;
 
         function autoTypeHackerCode() {
-            if (isUnlocked) return; // 如果已經解鎖成功，就暫停輸入
+            if (isUnlocked) return; 
 
             // 每次敲鍵盤吐出 5 個字元
             for (let k = 0; k < 5; k++) {
                 if (!currentLineBuffer || bufferCharIndex >= currentLineBuffer.length) {
                     
-                    // 🔔 【檢查解鎖閾值】：當隨機代碼生成超過 25 行時，判定成功！
+                    // 當隨機代碼生成超過 25 行時，判定成功！
                     if (lineCount >= 25) {
                         isUnlocked = true;
-                        successOverlay.style.display = 'block'; // 彈出成功橫幅
+                        successOverlay.style.display = 'block'; 
                         return;
                     }
                     
@@ -237,9 +244,6 @@ html_code = """
                 terminal.innerHTML = base + nextChar + "<span class=\\"cursor\\"></span>";
                 bufferCharIndex++;
             }
-            
-            // 🔄 【全自動滾動精準校位】：不論頁面有多滿，強制滾動滑到最底端！
-            terminal.scrollTop = terminal.scrollHeight;
         }
 
         // 點擊網頁任意處自動聚焦輸入，保證按鍵百分之百響應
