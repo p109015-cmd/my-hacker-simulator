@@ -232,8 +232,73 @@ raw_html_code = """
         
         var lineCount = 0; var isUnlocked = false; var maxLines = 500;
         var alertCount = 0; var isDead = false;
-        var radarIntervalId = null; // 雷達繪圖排程計時器
+        var radarIntervalId = null; 
         
+        // --- Web Audio API 內建虛擬聲卡引擎 ---
+        var audioCtx = null;
+        var noiseNode = null; // 背景微波環境音
+        
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        // 播放「雷達掃描鎖定」嗶聲音效
+        function playRadarBeep(freq, duration) {
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                var osc = audioCtx.createOscillator();
+                var gainNode = audioCtx.createGain();
+                
+                osc.type = "sine"; // 正弦波
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime); // 頻率
+                
+                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration); // 音量衰減
+                
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+        
+        // 啟動環境白噪音（模擬深空衛星下行訊號雜音）
+        function startStaticNoise() {
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                var bufferSize = 2 * audioCtx.sampleRate;
+                var noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                var output = noiseBuffer.getChannelData(0);
+                for (var i = 0; i < bufferSize; i++) {
+                    output[i] = Math.random() * 2 - 1;
+                }
+                noiseNode = audioCtx.createBufferSource();
+                noiseNode.buffer = noiseBuffer;
+                noiseNode.loop = true;
+                
+                var filter = audioCtx.createBiquadFilter();
+                filter.type = "bandpass"; // 帶通濾波，讓雜訊聽起來像廣播
+                filter.frequency.value = 1000;
+                
+                var gain = audioCtx.createGain();
+                gain.gain.value = 0.02; // 設定極弱背景音，有質感不刺耳
+                
+                noiseNode.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                noiseNode.start();
+            } catch(e) {}
+        }
+        
+        function stopStaticNoise() {
+            if (noiseNode) { try { noiseNode.stop(); } catch(e){} noiseNode = null; }
+        }
+        // ------------------------------------
+
         function triggerTerminalShake() { terminal.classList.add("shake"); setTimeout(function() { terminal.classList.remove("shake"); }, 400); }
         
         function enterC2Panel() {
@@ -251,6 +316,7 @@ raw_html_code = """
             if (Math.random() < 0.008) {
                 alertCount++;
                 triggerTerminalShake();
+                playRadarBeep(180, 0.3); // 警報低音
                 var div = document.createElement("div"); div.className = "log-line critical-alert";
                 div.textContent = "[CRITICAL ALERT (" + alertCount + "/5)] !!! DETECTION WARNING: FIREWALL COUNTERMEASURE TRIGGERED... !!!";
                 dynamicContent.appendChild(div); lineCount++;
@@ -280,6 +346,7 @@ raw_html_code = """
             
             var burnInterval = setInterval(function() {
                 timeLeft--;
+                playRadarBeep(90, 0.1); // 倒數低頻滴滴聲
                 var timerEl = document.getElementById("burn-timer");
                 if(timerEl) timerEl.textContent = timeLeft + "s";
                 if(timeLeft <= 0) { clearInterval(burnInterval); }
@@ -287,6 +354,7 @@ raw_html_code = """
 
             setTimeout(function() {
                 clearInterval(burnInterval);
+                playRadarBeep(50, 1.5); // 熔毀長鳴音
                 fxLayer.className = "dead-screen";
                 fxLayer.innerHTML = "SYSTEM COMPONENT DESTROYED<div class='dead-sub'>核心已徹底熔毀。按下 [ 小鍵盤 9 ] 以重組硬體面板</div>";
             }, 15000);
@@ -336,7 +404,9 @@ raw_html_code = """
         }
 
         function stopRadar() {
-            if(radarIntervalId) { clearInterval(radarIntervalId); radarIntervalId = null; }
+            clearInterval(radarIntervalId); 
+            radarIntervalId = null;
+            stopStaticNoise();
         }
         
         /* C2 Panel 按鈕功能模組 */
@@ -344,11 +414,13 @@ raw_html_code = """
             openFxLayer();
             var count = 0;
             var timer = setInterval(function() {
+                if(count % 15 === 0) playRadarBeep(1200, 0.02); // 資料噴發音
                 var d = document.createElement("div"); d.style.color = "#33ff33"; d.style.fontSize = "14px"; d.style.marginBottom = "2px";
                 d.textContent = "[STREAM_DUMP] UID_" + Math.floor(Math.random()*89999+10000) + " | IP: " + Math.floor(Math.random()*254+1) + "." + Math.floor(Math.random()*254) + ".71." + Math.floor(Math.random()*254) + " | PASS_HASH: " + Math.random().toString(16).substring(2,15).toUpperCase() + " | EXPORT: SUCCESS";
                 fxLayer.appendChild(d); fxLayer.scrollTop = fxLayer.scrollHeight; count++;
                 if(count >= 150) { 
                     clearInterval(timer);
+                    playRadarBeep(880, 0.3);
                     var endMsg = document.createElement("div"); endMsg.style.color = "#00ff00"; endMsg.style.fontSize = "20px"; endMsg.style.marginTop = "20px"; endMsg.style.fontWeight = "bold";
                     endMsg.innerHTML = "<br>💀 [DATA EXPORT COMPLETE] 數據庫已完全拖庫成功。<br><button onclick='backToC2()' style='background:#003300; color:#00ff00; border:1px solid #00ff00; padding:10px; margin-top:15px; cursor:pointer;'>返回主控面板</button>";
                     fxLayer.appendChild(endMsg); fxLayer.scrollTop = fxLayer.scrollHeight;
@@ -356,14 +428,16 @@ raw_html_code = """
             }, 25);
         }
         
-        /* 2. 衛星劫持：全面改用 100% 機密獨立純前端 Canvas 雷達模擬，保證不依賴外部任何影片網址 */
+        /* 2. 衛星劫持：Canvas 動態渲染 + Web Audio API 全功能音效 */
         function triggerSatellite() {
             openFxLayer();
+            startStaticNoise(); // 啟動衛星下行環境雜訊
+            
             var pct = 0; 
             var container = document.createElement("div"); 
             container.style.textAlign = "center"; container.style.marginTop = "3vh";
             container.innerHTML = '<h2 style="letter-spacing:3px;">🛰️ [ORBITAL SATELLITE HIJACK PROTOCOL]</h2>' +
-                                   '<div style="font-size:14px; color:#00aa00; margin-bottom:10px;">系統已切換至虛擬矩陣接收器，正實時渲染軌道特種光學雷達影像...</div>' +
+                                   '<div style="font-size:14px; color:#00aa00; margin-bottom:10px;">系統已切換至虛擬網路接收器，聲頻與光學雷達影像實時解碼中...</div>' +
                                    '<div class="radar-container">' +
                                    '  <canvas id="satRadarCanvas" width="560" height="315"></canvas>' +
                                    '</div>' +
@@ -372,7 +446,6 @@ raw_html_code = """
                                    '<div id="sat-details" style="margin-top:15px; font-size:13px; text-align:left; width:60%; margin-left:auto; margin-right:auto; color:#33ff33; height:110px; overflow-y:auto; border-top:1px dashed #005500; padding-top:10px;"></div>';
             fxLayer.appendChild(container);
             
-            // 啟動自畫雷達渲染引擎
             initRadarEngine();
             
             var fill = document.getElementById("sat-fill"); 
@@ -382,25 +455,25 @@ raw_html_code = """
             var timer = setInterval(function() {
                 pct += 2; fill.style.width = pct + "%"; pctText.textContent = pct + "%";
                 if(pct % 10 === 0) { 
-                    details.innerHTML += "&gt;&gt; 光學反饋接收中... 經緯鎖定: " + (Math.random()*180).toFixed(4) + "°N, " + (Math.random()*90).toFixed(4) + "°E | 訊號強度: [EXCELLENT]<br>"; 
+                    playRadarBeep(600, 0.08); // 進度推進提示音
+                    details.innerHTML += "&gt;&gt; 光學音頻同步解鎖... 經緯度: " + (Math.random()*180).toFixed(4) + "°N | 鎖定軌道強度: [EXCELLENT]<br>"; 
                     details.scrollTop = details.scrollHeight; 
                 }
                 if(pct >= 100) { 
                     clearInterval(timer); 
-                    details.innerHTML += "<br><span style='color:#ffffff; font-size:16px; font-weight:bold;'>🛰️ [HIJACK SUCCESS] 衛星鎖定機制已固化，全球戰術掃描儀常駐在線！</span><br><button onclick='backToC2()' style='background:#003300; color:#00ff00; border:1px solid #00ff00; padding:10px; margin-top:15px; cursor:pointer;'>返回主控面板</button>"; 
+                    playRadarBeep(950, 0.4); // 成功鎖定高頻音
+                    details.innerHTML += "<br><span style='color:#ffffff; font-size:16px; font-weight:bold;'>🛰️ [HIJACK SUCCESS] 衛星控制鏈與下行廣播音軌固化成功！</span><br><button onclick='backToC2()' style='background:#003300; color:#00ff00; border:1px solid #00ff00; padding:10px; margin-top:15px; cursor:pointer;'>返回主控面板</button>"; 
                     details.scrollTop = details.scrollHeight; 
                 }
             }, 60);
         }
         
-        // 純前端模擬軍事雷達掃描動畫（不耗網路流量，100% 成功率）
         function initRadarEngine() {
             var rCanvas = document.getElementById("satRadarCanvas");
             if(!rCanvas) return;
             var rCtx = rCanvas.getContext("2d");
             var angle = 0;
             
-            // 隨機產生一些代表地面目標點的座標
             var targets = [];
             for(var i=0; i<12; i++) {
                 targets.push({
@@ -412,44 +485,41 @@ raw_html_code = """
             }
 
             radarIntervalId = setInterval(function() {
-                // 1. 純黑背景覆蓋
                 rCtx.fillStyle = "rgba(0, 0, 0, 0.15)";
                 rCtx.fillRect(0, 0, rCanvas.width, rCanvas.height);
                 
                 var cx = rCanvas.width / 2;
                 var cy = rCanvas.height / 2;
                 
-                // 2. 畫雷達同心圓線條
                 rCtx.strokeStyle = "rgba(0, 255, 0, 0.2)";
                 rCtx.lineWidth = 1;
                 for(var r = 40; r <= 150; r += 40) {
                     rCtx.beginPath(); rCtx.arc(cx, cy, r, 0, Math.PI * 2); rCtx.stroke();
                 }
                 
-                // 十字星準心線
                 rCtx.beginPath(); rCtx.moveTo(cx - 180, cy); rCtx.lineTo(cx + 180, cy); rCtx.stroke();
                 rCtx.beginPath(); rCtx.moveTo(cx, cy - 140); rCtx.lineTo(cx, cy + 140); rCtx.stroke();
                 
-                // 3. 畫隨機掃描到的軍事目標點
                 for(var i=0; i<targets.length; i++) {
                     var t = targets[i];
                     rCtx.fillStyle = "rgba(0, 255, 50, " + t.alpha + ")";
-                    rCtx.beginPath();
-                    rCtx.arc(t.x, t.y, t.size, 0, Math.PI*2);
-                    rCtx.fill();
-                    // 加上科幻小外框
+                    rCtx.beginPath(); rCtx.arc(t.x, t.y, t.size, 0, Math.PI*2); rCtx.fill();
                     if(t.alpha > 0.5) {
                         rCtx.strokeStyle = "rgba(0, 255, 0, " + (t.alpha - 0.3) + ")";
                         rCtx.strokeRect(t.x - t.size - 2, t.y - t.size - 2, t.size*2 + 4, t.size*2 + 4);
                     }
-                    // 動態閃爍
-                    if(Math.random() > 0.9) t.alpha = Math.random();
+                    if(Math.random() > 0.94) t.alpha = Math.random();
                 }
                 
-                // 4. 畫旋轉掃描光束
+                // 掃描線轉動
                 angle += 0.04;
                 var bx = cx + Math.cos(angle) * 220;
                 var by = cy + Math.sin(angle) * 220;
+                
+                // 定期觸發經典雷達「掃描掠過」嗶嗶聲
+                if(Math.abs(angle % (Math.PI)) < 0.04) {
+                    playRadarBeep(440, 0.12); // 雷達正弦掃描音
+                }
                 
                 var gradient = rCtx.createLinearGradient(cx, cy, bx, by);
                 gradient.addColorStop(0, "rgba(0, 255, 0, 0.6)");
@@ -459,14 +529,11 @@ raw_html_code = """
                 rCtx.lineWidth = 3;
                 rCtx.beginPath(); rCtx.moveTo(cx, cy); rCtx.lineTo(bx, by); rCtx.stroke();
                 
-                // 5. 左上角加上雜訊文字
-                rCtx.fillStyle = "#00ff00";
-                rCtx.font = "11px monospace";
+                rCtx.fillStyle = "#00ff00"; rCtx.font = "11px monospace";
                 rCtx.fillText("SAT-ID: ORBIT-GHOST-X9", 15, 20);
                 rCtx.fillText("ALTITUDE: 42,164 KM", 15, 35);
-                rCtx.fillText("SYS_LOCK: ACTIVE", 15, 50);
+                rCtx.fillText("AUDIO_TRACK: SYNCHRONIZED", 15, 50);
                 
-                // 右下角加上掃描經緯度數據變動
                 rCtx.fillText("LAT: " + (Math.sin(angle)*90).toFixed(4), rCanvas.width - 140, rCanvas.height - 35);
                 rCtx.fillText("LNG: " + (Math.cos(angle)*180).toFixed(4), rCanvas.width - 140, rCanvas.height - 20);
                 
@@ -479,8 +546,14 @@ raw_html_code = """
             var nukeCount = document.createElement("div"); nukeCount.className = "nuke-countdown"; nukeCount.textContent = "5"; fxLayer.appendChild(nukeCount);
             var countdown = 5;
             var timer = setInterval(function() {
-                countdown--; if(countdown >= 0) nukeCount.textContent = countdown;
-                if(countdown < 0) { clearInterval(timer); nukeTitle.textContent = "💥 [CORE COLLAPSE - SERVER DESTROYED] 💥"; nukeCount.style.display = "none"; document.body.className = "screen-collapse"; setTimeout(function() { location.reload(); }, 600); }
+                countdown--; 
+                playRadarBeep(150, 0.1); // 手動自毀心跳音
+                if(countdown >= 0) nukeCount.textContent = countdown;
+                if(countdown < 0) { 
+                    clearInterval(timer); 
+                    playRadarBeep(40, 1.0);
+                    nukeTitle.textContent = "💥 [CORE COLLAPSE - SERVER DESTROYED] 💥"; nukeCount.style.display = "none"; document.body.className = "screen-collapse"; setTimeout(function() { location.reload(); }, 600); 
+                }
             }, 800);
         }
         
@@ -493,7 +566,7 @@ raw_html_code = """
                 var input = document.getElementById("c2-cmd-field"); var cmd = input.value.trim().toLowerCase(); if (!cmd) return;
                 logC2("<span style='color:#ffffff'>c2-admin# " + input.value + "</span>"); input.value = "";
                 if (cmd === "help") logC2("內建高級指令: <b>download_all</b>, <b>clear</b>");
-                else if (cmd === "download_all") logC2("[+] 建立多線程快取隊列... [■■■■■■■■■■■■■■■■] 100% 傳輸完成。");
+                else if (cmd === "download_all") { playRadarBeep(1000, 0.2); logC2("[+] 建立多線程快取隊列... [■■■■■■■■■■■■■■■■] 100% 傳輸完成。"); }
                 else if (cmd === "clear") c2Output.innerHTML = "";
                 else logC2("[!] 指令已封裝為虛擬例外，異步盲發送至主機端...");
             }
