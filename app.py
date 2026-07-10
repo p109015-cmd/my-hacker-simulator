@@ -5,7 +5,7 @@ import random
 # 1. 網頁頁面初始化設定
 st.set_page_config(page_title="賴以航 終極黑客控制台 Pro+", page_icon="💀", layout="centered")
 
-# --- 🎯 終極視覺魔法：強行覆蓋全網頁為黑底綠字 ---
+# --- 🎯 終極視覺魔法：強行覆蓋全網頁為純黑底螢光綠字 ---
 st.markdown("""
     <style>
     /* 全網頁底色與主文字 */
@@ -81,7 +81,7 @@ if st.sidebar.button("💥 啟動暴力破譯"):
     for i in range(100):
         fake_pass = "".join(random.choices("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*", k=10))
         placeholder.text(f"🔑 嘗試中: {fake_pass}")
-        time.sleep(0.02)
+        time.sleep(0.01)
         crack_bar.progress(i + 1)
         
     placeholder.success(f"🔓 破譯成功！密碼為: LaiHang{random.randint(1000,9999)}Pro")
@@ -127,7 +127,7 @@ cmd_input = st.text_input("請輸入 Linux 終端指令 (例如: `help`, `scan`,
 if cmd_input:
     st.write(f"`lai-hang@hacker-terminal:~# {cmd_input}`")
     with st.spinner("執行指令中..."):
-        time.sleep(0.8)
+        time.sleep(0.5)
     
     if cmd_input.lower() == "help":
         st.code("可用指令清單:\n- scan : 掃描目標主機通訊埠\n- bypass : 跳過防火牆\n- clear : 清除系統日誌", language="bash")
@@ -140,7 +140,7 @@ if cmd_input:
 
 st.write("---")
 
-# 5. 終端機動態串流
+# 5. 終端機動態串流 (修正了未閉合括號的重災區)
 st.markdown("### 📟 即時網路數據串流緩衝區 (Live Console)")
 
 hacker_logs = [
@@ -157,4 +157,12 @@ hacker_logs = [
 if st.button("🖥️ 啟動代碼滲透串流 (Live Stream)", use_container_width=True):
     st.write(">> 正在與遠端伺服器同步日誌：")
     for _ in range(10):
-        random_log = random.choice(h
+        random_log = random.choice(hacker_logs)
+        with st.chat_message("assistant", avatar="💀"):
+            st.code(random_log, language="bash")
+        time.sleep(0.1)
+    st.success("🎯 終端任務執行完畢。所有足跡已完全抹除。")
+
+st.write("\n---")
+st.caption("⚡ Powered by Streamlit Components & Logic Engine")
+st.caption("© 2026 賴以航 (Yi-Hang Lai). Confidential Hack Terminal. All rights reserved.")
