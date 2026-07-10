@@ -1,21 +1,33 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-# 1. 網頁頁面初始化設定
-st.set_page_config(page_title="究極黑客控制台 v10.8", page_icon="💀", layout="wide")
+# 1. 網頁頁面初始化設定（強制全螢幕、純黑背景）
+st.set_page_config(page_title="究極黑客控制台 v10.9", page_icon="💀", layout="wide")
 
-# 強制隱藏 Streamlit 的所有原生網頁元件，達成全螢幕純黑客視窗
+# 加強外層 CSS：確保 Streamlit 原生 iframe 元件能百分之百填滿視窗，不會出現外部斷層
 st.markdown(
-    "<style>"
-    "[data-testid='stHeader'], footer, #MainMenu {visibility: hidden !important;}"
-    ".stApp {background-color: #000000 !important;}"
-    ".block-container {padding: 0px !important; max-width: 100% !important;}"
-    "iframe {display: block; border: none;}"
-    "</style>", 
+    """
+    <style>
+    [data-testid="stHeader"], footer, #MainMenu {visibility: hidden !important;}
+    .stApp {background-color: #000000 !important;}
+    .block-container {padding: 0px !important; max-width: 100% !important; margin: 0px !important;}
+    
+    /* 強制讓元件的容器填滿整個瀏覽器視窗高度 */
+    [data-testid="stHtmlBlock"], [data-testid="stElementContainer"], iframe {
+        width: 100% !important;
+        height: 100vh !important;
+        display: block !important;
+        border: none !important;
+    }
+    body {
+        overflow: hidden !important;
+    }
+    </style>
+    """, 
     unsafe_allow_html=True
 )
 
-# 2. 注入完全去反斜線、無大括號漏洞的終極網頁控制引擎
+# 2. 純淨網頁控制引擎（100% 滿頁自適應、內部強效防溢出滾動）
 html_code = """
 <!DOCTYPE html>
 <html lang="zh-TW">
@@ -41,6 +53,8 @@ html_code = """
             z-index: 1;
             opacity: 0.15;
         }
+        
+        /* 終端機面板：滿頁高、啟用全自動平滑滾動 */
         #terminal {
             position: absolute;
             top: 0;
@@ -53,13 +67,17 @@ html_code = """
             font-size: 18px;
             line-height: 1.6;
             overflow-y: auto;
+            scroll-behavior: smooth;
             white-space: pre-wrap;
             word-wrap: break-word;
             text-shadow: 0 0 4px #00ff00;
         }
+        
+        /* 隱藏滾動條，保持純黑客視窗美感 */
         #terminal::-webkit-scrollbar {
             display: none;
         }
+        
         .cursor {
             display: inline-block;
             background-color: #00ff00;
@@ -72,6 +90,7 @@ html_code = """
             0%, 49% { background-color: #00ff00; }
             50%, 100% { background-color: transparent; }
         }
+        
         #success-overlay {
             display: none;
             position: fixed;
@@ -110,6 +129,7 @@ html_code = """
     </div>
 
     <script>
+        // === 1. Matrix 數位雨 ===
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
@@ -143,6 +163,8 @@ html_code = """
         }
         setInterval(drawMatrix, 30);
 
+
+        // === 2. 核心代碼池與強制滿頁滾動引擎 ===
         const terminal = document.getElementById('terminal');
         const hiddenInput = document.getElementById('hidden-input');
         const successOverlay = document.getElementById('success-overlay');
@@ -169,13 +191,12 @@ html_code = """
         let lineCount = 0; 
         let isUnlocked = false; 
 
-        // 自動向下滑動滾動機制
+        // 核心滿頁強制滾動機制：只要一出現新代碼，立刻強制讓滾動條死死鎖在最底部
         const observer = new MutationObserver(() => {
             terminal.scrollTop = terminal.scrollHeight;
         });
         observer.observe(terminal, { childList: true, subtree: true });
 
-        // 放棄使用所有包含反斜線的 \\n，改用陣列結合方式動態回傳換行代碼
         function generateRandomHackerLine() {
             lineCount++; 
             const hexAddr = '0x' + Math.floor(Math.random() * 16777215).toString(16).toUpperCase() + 
@@ -197,10 +218,9 @@ html_code = """
             }
         }
 
-        // 初始化頂部冷酷日誌面板（利用 join 拼接換行，完全避開反斜線）
         let currentText = [
             "==================================================================",
-            "💀 首席網路安全專家：[REDACTED] | 核心作戰控制終端 v10.8",
+            "💀 首席網路安全專家：[REDACTED] | 核心作戰控制終端 v10.9",
             "==================================================================",
             ">> CORE STATUS: READY",
             ">> INFILTRATION LEVEL: INITIALIZED",
@@ -228,31 +248,9 @@ html_code = """
                 }
 
                 let nextChar = currentLineBuffer.charAt(bufferCharIndex);
-                // 使用編碼偵測換行並轉換成網頁 HTML 斷行標籤
                 if (nextChar.charCodeAt(0) === 10) {
                     nextChar = '<br>';
                 }
 
                 let base = terminal.innerHTML.replace("<span class=\\"cursor\\"></span>", "");
-                terminal.innerHTML = base + nextChar + "<span class=\\"cursor\\"></span>";
-                bufferCharIndex++;
-            }
-        }
-
-        // 滑鼠點擊畫面的任何一處都會強制幫隱藏的輸入框聚焦，確保 100% 響應鍵盤
-        document.body.addEventListener('click', () => { hiddenInput.focus(); });
-        document.addEventListener('keydown', (e) => {
-            if (e.key !== 'Shift' && e.key !== 'Control' && e.key !== 'Alt' && e.key !== 'Meta') {
-                autoTypeHackerCode();
-            }
-        });
-        
-        // 首次載入自動獲取輸入焦點
-        setTimeout(() => { hiddenInput.focus(); }, 200);
-    </script>
-</body>
-</html>
-"""
-
-# 3. 渲染網頁元件
-components.html(html_code, height=1000, scrolling=False)
+                terminal.innerHTML = base + nextChar + "<span class=\\"cursor\\"></span>
