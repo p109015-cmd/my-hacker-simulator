@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # 1. 網頁頁面初始化設定（強制全螢幕、純黑背景）
-st.set_page_config(page_title="究極黑客控制台 v15.2", page_icon="💀", layout="wide")
+st.set_page_config(page_title="究極黑客控制台 v17.0", page_icon="💀", layout="wide")
 
 # 強制隱藏 Streamlit 的所有原生網頁 UI
 st.markdown(
@@ -24,13 +24,13 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# 2. 安全字串包覆版控制台核心 (v15.2)
+# 2. 全核心程式碼導入（新增第一階段防火牆反噬爆炸機制）
 raw_html_code = """
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>Matrix Terminal Command Center v15.2</title>
+    <title>Matrix Terminal Command Center v17.0</title>
     <style>
         * { box-sizing: border-box; }
         body, html {
@@ -58,7 +58,15 @@ raw_html_code = """
         @keyframes glitch-flash { 0%, 100% { opacity: 1; background: rgba(255,0,85,0.15); } 50% { opacity: 0.3; background: transparent; } }
         .status-panel { color: #1aff1a; font-weight: bold; background: rgba(0, 40, 0, 0.4); padding: 10px; border-left: 4px solid #00ff00; margin-top: 15px; margin-bottom: 15px; }
         
-        /* 階段二：解鎖後的互動式 C2 主控面板 */
+        /* 突發事件過載死亡畫面 */
+        .dead-screen {
+            background-color: #000000 !important; color: #ff0055 !important;
+            font-size: 45px; font-weight: bold; text-align: center; padding-top: 35vh;
+            text-shadow: 0 0 20px #ff0055; animation: red-flash 0.4s infinite;
+        }
+        .dead-sub { font-size: 20px; color: #ffffff; margin-top: 20px; text-shadow: 0 0 5px #fff; }
+        
+        /* 階段二：解鎖後的 C2 主控面板 */
         #c2-dashboard {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100vh; z-index: 10; 
             padding: 30px; color: #00ff00; background: rgba(0,0,0,0.95); border: 2px solid #00ff00;
@@ -99,6 +107,13 @@ raw_html_code = """
             100% { transform: scaleY(0) scaleX(0); filter: brightness(5); background: #fff; opacity: 0; }
         }
         
+        /* 衛星影片科技風格濾鏡 */
+        .video-container {
+            position: relative; width: 560px; height: 315px; margin: 25px auto;
+            border: 2px solid #00ff00; box-shadow: 0 0 30px rgba(0,255,0,0.3);
+            filter: hue-rotate(60deg) contrast(1.2) sepia(0.2);
+        }
+        
         /* 劇烈搖晃效果 */
         .nuke-alert-active { background: rgba(20,0,0,1) !important; animation: screen-shake 0.1s infinite !important; }
         .shake { animation: screen-shake 0.4s linear; }
@@ -116,7 +131,7 @@ raw_html_code = """
     
     <div id="terminal">
         <div class="log-line">========================================================================================</div>
-        <div class="log-line">💀 遠端深層控制鏈主控台 v15.2 | 侵入成功後將自動解鎖 C2 全功能戰略面板</div>
+        <div class="log-line">💀 遠端深層控制鏈主控台 v17.0 | 侵入成功後將自動解鎖 C2 全功能戰略面板</div>
         <div class="log-line">========================================================================================</div>
         <div id="dynamic-content"></div>
         <div id="status-display" class="status-panel">目前進度: [ 🧭 PHASE 1: 初始化全網子網段探測機制... ] [0%]</div>
@@ -126,19 +141,19 @@ raw_html_code = """
     <input type="text" id="hidden-input" autofocus>
     
     <div id="c2-dashboard">
-        <div class="panel-header">💀 [GHOST-NETWORK CENTRAL C2 PANEL v15.2] - ACCESS GRANTED 💀</div>
+        <div class="panel-header">💀 [GHOST-NETWORK CENTRAL C2 PANEL v17.0] - ACCESS GRANTED 💀</div>
         <div class="panel-main">
             <div class="control-side">
                 <div style="font-weight:bold; border-bottom: 1px solid #00ff00; padding-bottom:5px; margin-bottom:5px;">[ 戰略後門操控模組 ]</div>
                 <button class="interactive-btn" onclick="triggerDump()">📂 數據導出 (Dump User Credentials)</button>
-                <button class="interactive-btn" onclick="triggerSatellite()">卫星劫持 (Hijack Orbital Satellite)</button>
+                <button class="interactive-btn" onclick="triggerSatellite()">衛星劫持 (Hijack Orbital Satellite)</button>
                 <button class="interactive-btn" onclick="triggerClean()">🎭 換臉偽裝 (Wipe Terminal Traces)</button>
                 <button class="interactive-btn" style="border-color:#ff0055; color:#ff0055;" onclick="triggerNuke()">💣 自毀程序 (Nuke Mainframe Server)</button>
                 <div style="font-size:12px; color:#00aa00; margin-top:auto;">系統狀態: 在線 (ENCRYPTED)<br>中繼節點: SOCKS5://103.24.51.9</div>
             </div>
             <div class="console-side">
                 <div class="console-output" id="c2-output">
-                    [SYSTEM] 成功對接主機。點擊左側按鈕即可切換至【獨立全黑底特效模式】下達戰略威脅...<br>
+                    [SYSTEM] 成功對接主機。點擊左側按鈕即可切換至【獨立全黑底功能模式】下達戰略威脅...<br>
                     提示指令：help, download_all, clear
                 </div>
                 <div class="console-input-area">
@@ -196,33 +211,64 @@ raw_html_code = """
         var c2Output = document.getElementById("c2-output");
         
         var lineCount = 0; var isUnlocked = false; var maxLines = 500;
+        var alertCount = 0; var isDead = false; // 新增錯誤計數器與死亡狀態
+        
         function triggerTerminalShake() { terminal.classList.add("shake"); setTimeout(function() { terminal.classList.remove("shake"); }, 400); }
         
         function appendNewLine() {
-            if (isUnlocked) return;
+            if (isUnlocked || isDead) return;
+            
             if (lineCount >= maxLines) {
                 isUnlocked = true; terminal.style.display = "none";
                 c2Dashboard.style.display = "grid";
                 document.getElementById("c2-cmd-field").focus();
                 return;
             }
+            
+            // 4% 機率觸發防火牆錯誤警告事件
             if (Math.random() < 0.04) {
+                alertCount++;
                 triggerTerminalShake();
+                
                 var div = document.createElement("div"); div.className = "log-line critical-alert";
-                div.textContent = "[CRITICAL ALERT] !!! DETECTION WARNING: FIREWALL COUNTERMEASURE TRIGGERED... BYPASSING !!!";
+                div.textContent = "[CRITICAL ALERT (" + alertCount + "/5)] !!! DETECTION WARNING: FIREWALL COUNTERMEASURE TRIGGERED... !!!";
                 dynamicContent.appendChild(div); lineCount++;
+                
+                // 超過 5 次錯誤突發事件：原地爆炸並進入死亡判定
+                if (alertCount > 5) {
+                    isDead = true;
+                    openFxLayer();
+                    fxLayer.classList.add("nuke-alert-active");
+                    fxLayer.innerHTML = "<div style='text-align:center; color:#ff0055; font-size:50px; font-weight:bold; margin-top:20vh;'>💥 [PANIC: TERMINAL OVERLOAD DETONATION] 💥<br><span style='font-size:20px; color:#fff;'>防火牆反制追蹤成功，主控台晶片已過載炸毀。</span></div>";
+                    
+                    setTimeout(function() {
+                        fxLayer.className = "dead-screen";
+                        fxLayer.innerHTML = "YOU ARE DIED<div class='dead-sub'>按下 Enter 以重新處理</div>";
+                    }, 1000);
+                    return;
+                }
             } else {
                 var div = document.createElement("div"); div.className = "log-line";
                 div.textContent = "[SYSTEM_CORE] [OK] 注入核心控制流協定因子，正在重構核心記憶體指標...";
                 dynamicContent.appendChild(div); lineCount++;
             }
+            
             var pct = Math.floor((lineCount / maxLines) * 100);
             statusDisplay.textContent = "目前進度: [ ⚡ PHASE " + (Math.floor(pct/20)+1) + ": 核心矩陣協議破解中... ] [" + pct + "%]";
             document.getElementById("input-line").scrollIntoView({ behavior: "smooth", block: "end" });
         }
         
-        document.body.addEventListener("click", function() { if(!isUnlocked) hiddenInput.focus(); });
+        document.body.addEventListener("click", function() { if(!isUnlocked && !isDead) hiddenInput.focus(); });
+        
         document.addEventListener("keydown", function(e) {
+            // 如果處於死亡畫面，按下 Enter 鍵重新處理（網頁重整）
+            if (isDead) {
+                if (e.key === "Enter") {
+                    location.reload();
+                }
+                return;
+            }
+            
             if (!isUnlocked && e.key !== "Shift" && e.key !== "Control" && e.key !== "Alt" && e.key !== "Meta") {
                 for(var i=0; i<5; i++) { appendNewLine(); }
             }
@@ -252,17 +298,23 @@ raw_html_code = """
             }, 25);
         }
         
-        /* 2. 🛰️ 衛星劫持 -> 切回全黑底 + 繞軌連線進度 */
+        /* 2. 🛰️ 衛星劫持 -> 切回全黑底 + 播放隨機影片 + 量子解密進度條 */
         function triggerSatellite() {
             openFxLayer();
+            var videoPool = ["W0LHTWG-UmQ", "EEIk7gwjgIM"]; 
+            var chosenVideoId = videoPool[Math.floor(Math.random() * videoPool.length)];
+            
             var pct = 0;
             var container = document.createElement("div");
-            container.style.textAlign = "center"; container.style.marginTop = "15vh";
+            container.style.textAlign = "center"; container.style.marginTop = "5vh";
             container.innerHTML = '<h2 style="letter-spacing:3px;">🛰️ [ORBITAL SATELLITE HIJACK PROTOCOL]</h2>' +
-                                   '<div style="font-size:16px; color:#00aa00; margin-bottom:20px;">正在向低軌道衛星網段下發虛擬控制信號...</div>' +
+                                   '<div style="font-size:16px; color:#00aa00; margin-bottom:15px;">正在強制劫持下行微波，同步調取實時光學視訊源...</div>' +
+                                   '<div class="video-container">' +
+                                   '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/' + chosenVideoId + '?autoplay=1&mute=1&controls=0&loop=1&playlist=' + chosenVideoId + '" frameborder="0" allow="autoplay" allowfullscreen></iframe>' +
+                                   '</div>' +
                                    '<div id="sat-progress-bar" style="width:60%; margin:0 auto; border:1px solid #00ff00; padding:3px; text-align:left;"><div id="sat-fill" style="width:0%; background:#00ff00; height:20px;"></div></div>' +
                                    '<div id="sat-pct" style="margin-top:10px; font-size:24px;">0%</div>' +
-                                   '<div id="sat-details" style="margin-top:30px; font-size:14px; text-align:left; width:50%; margin-left:auto; margin-right:auto; color:#33ff33;"></div>';
+                                   '<div id="sat-details" style="margin-top:20px; font-size:14px; text-align:left; width:50%; margin-left:auto; margin-right:auto; color:#33ff33; height:120px; overflow-y:auto;"></div>';
             fxLayer.appendChild(container);
             
             var fill = document.getElementById("sat-fill");
@@ -274,16 +326,18 @@ raw_html_code = """
                 fill.style.width = pct + "%";
                 pctText.textContent = pct + "%";
                 if(pct % 10 === 0) {
-                    details.innerHTML += "&gt;&gt; 正在覆寫地面站同步鎖定軌道 經度: " + (Math.random()*180).toFixed(4) + " 緯度: " + (Math.random()*90).toFixed(4) + "... OK<br>";
+                    details.innerHTML += "&gt;&gt; 量子加密金鑰破譯中... 位元組比對: [OK] | 鎖定軌道經緯度: " + (Math.random()*180).toFixed(4) + "°N, " + (Math.random()*90).toFixed(4) + "°E<br>";
+                    details.scrollTop = details.scrollHeight;
                 }
                 if(pct >= 100) {
                     clearInterval(timer);
-                    details.innerHTML += "<br><span style='color:#ffffff; font-size:18px; font-weight:bold;'>🛰️ [HIJACK SUCCESS] 衛星控制鏈已成功切換！下行通訊廣播權已完全奪取。</span><br><button onclick='backToC2()' style='background:#003300; color:#00ff00; border:1px solid #00ff00; padding:10px; margin-top:15px; cursor:pointer;'>返回主控面板</button>";
+                    details.innerHTML += "<br><span style='color:#ffffff; font-size:18px; font-weight:bold;'>🛰️ [HIJACK SUCCESS] 衛星控制鏈已成功切換！即時下行廣播影像接收中。</span><br><button onclick='backToC2()' style='background:#003300; color:#00ff00; border:1px solid #00ff00; padding:10px; margin-top:15px; cursor:pointer;'>返回主控面板</button>";
+                    details.scrollTop = details.scrollHeight;
                 }
             }, 60);
         }
         
-        /* 3. 💣 自毀程序 -> 切回全黑底 + 紅警強烈閃爍 + 電視縮線崩潰 */
+        /* 3. 💣 自毀程序 -> 切回全黑底 + 紅警巨響震動閃爍 + 老電視縮線崩潰 */
         function triggerNuke() {
             openFxLayer();
             fxLayer.classList.add("nuke-alert-active");
