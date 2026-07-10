@@ -213,4 +213,189 @@ raw_html_code = """
         var lineCount = 0; var isUnlocked = false; var maxLines = 500;
         var alertCount = 0; var isDead = false;
         
-        function triggerTerminalShake() { terminal.classList.add("shake"); setTimeout(function() { terminal.classList.remove("shake
+        function triggerTerminalShake() { terminal.classList.add("shake"); setTimeout(function() { terminal.classList.remove("shake"); }, 400); }
+        
+        function appendNewLine() {
+            if (isUnlocked || isDead) return;
+            
+            if (lineCount >= maxLines) {
+                isUnlocked = true; terminal.style.display = "none";
+                c2Dashboard.style.display = "grid";
+                document.getElementById("c2-cmd-field").focus();
+                return;
+            }
+            
+            // 0.8% 平衡觸發率
+            if (Math.random() < 0.008) {
+                alertCount++;
+                triggerTerminalShake();
+                
+                var div = document.createElement("div"); div.className = "log-line critical-alert";
+                div.textContent = "[CRITICAL ALERT (" + alertCount + "/5)] !!! DETECTION WARNING: FIREWALL COUNTERMEASURE TRIGGERED... !!!";
+                dynamicContent.appendChild(div); lineCount++;
+                
+                if (alertCount > 5) {
+                    isDead = true;
+                    openFxLayer();
+                    fxLayer.classList.add("nuke-alert-active");
+                    
+                    var timeLeft = 15;
+                    fxLayer.innerHTML = "<div id='burn-panel' style='text-align:center; color:#ff0055; font-size:45px; font-weight:bold; margin-top:15vh;'>" +
+                                        "💥 [SYSTEM MELTDOWN: CRITICAL HARDWARE EXPLOSION] 💥<br>" +
+                                        "<span style='font-size:22px; color:#fff;'>核心晶片正在承受不可逆的高壓過載熔毀...</span><br>" +
+                                        "<div style='font-size:60px; color:#ff0055; margin-top:20px;' id='burn-timer'>15s</div>" +
+                                        "<div style='font-size:14px; color:#ffaa00; margin-top:20px; animation:blink 0.3s infinite;'>[⚡ VOLTAGE OVERFLOW: 999% - MOTHERBOARD DESTROYING ⚡]</div></div>";
+                    
+                    var burnInterval = setInterval(function() {
+                        timeLeft--;
+                        var timerEl = document.getElementById("burn-timer");
+                        if(timerEl) timerEl.textContent = timeLeft + "s";
+                        if(timeLeft <= 0) { clearInterval(burnInterval); }
+                    }, 1000);
+
+                    // 15 秒核心大爆炸
+                    setTimeout(function() {
+                        clearInterval(burnInterval);
+                        fxLayer.className = "dead-screen";
+                        fxLayer.innerHTML = "YOU ARE DIED<div class='dead-sub'>按下 [ 小鍵盤 9 ] 以重新處理</div>";
+                    }, 15000);
+                    return;
+                }
+            } else {
+                var div = document.createElement("div"); div.className = "log-line";
+                div.textContent = "[SYSTEM_CORE] [OK] 注入核心控制流協定因子，正在重構核心記憶體指標...";
+                dynamicContent.appendChild(div); lineCount++;
+            }
+            
+            var pct = Math.floor((lineCount / maxLines) * 100);
+            statusDisplay.textContent = "目前進度: [ ⚡ PHASE " + (Math.floor(pct/20)+1) + ": 核心矩陣協議破解中... ] [" + pct + "%]";
+            document.getElementById("input-line").scrollIntoView({ behavior: "smooth", block: "end" });
+        }
+        
+        document.body.addEventListener("click", function() { if(!isUnlocked && !isDead) hiddenInput.focus(); });
+        
+        document.addEventListener("keydown", function(e) {
+            if (isDead) {
+                if (e.code === "Numpad9") {
+                    location.reload();
+                }
+                return;
+            }
+            
+            if (!isUnlocked && e.key !== "Shift" && e.key !== "Control" && e.key !== "Alt" && e.key !== "Meta") {
+                for(var i=0; i<5; i++) { appendNewLine(); }
+            }
+        });
+        
+        function openFxLayer() { c2Dashboard.style.display = "none"; fxLayer.style.display = "block"; fxLayer.innerHTML = ""; fxLayer.className = ""; }
+        
+        /* 1. 📂 數據導出 */
+        function triggerDump() {
+            openFxLayer();
+            var count = 0;
+            var timer = setInterval(function() {
+                var d = document.createElement("div");
+                d.style.color = "#33ff33"; d.style.fontSize = "14px"; d.style.marginBottom = "2px";
+                d.textContent = "[STREAM_DUMP] UID_" + Math.floor(Math.random()*89999+10000) + " | IP: " + Math.floor(Math.random()*254+1) + "." + Math.floor(Math.random()*254) + ".71." + Math.floor(Math.random()*254) + " | PASS_HASH: " + Math.random().toString(16).substring(2,15).toUpperCase() + " | EXPORT: SUCCESS";
+                fxLayer.appendChild(d);
+                fxLayer.scrollTop = fxLayer.scrollHeight;
+                count++;
+                if(count >= 150) { 
+                    clearInterval(timer);
+                    var endMsg = document.createElement("div");
+                    endMsg.style.color = "#00ff00"; endMsg.style.fontSize = "20px"; endMsg.style.marginTop = "20px"; endMsg.style.fontWeight = "bold";
+                    endMsg.innerHTML = "<br>💀 [DATA EXPORT COMPLETE] 數萬筆核心個資與密碼庫已完全拖庫快取成功。<br><button onclick='backToC2()' style='background:#003300; color:#00ff00; border:1px solid #00ff00; padding:10px; margin-top:15px; cursor:pointer;'>返回主控面板</button>";
+                    fxLayer.appendChild(endMsg);
+                    fxLayer.scrollTop = fxLayer.scrollHeight;
+                }
+            }, 25);
+        }
+        
+        /* 2. 🛰️ 衛星劫持【此處已更換全新有效影片 ID】 */
+        function triggerSatellite() {
+            openFxLayer();
+            var videoPool = ["XBPjVzSoepo", "P5_GlAOCHyE"]; 
+            var chosenVideoId = videoPool[Math.floor(Math.random() * videoPool.length)];
+            
+            var pct = 0;
+            var container = document.createElement("div");
+            container.style.textAlign = "center"; container.style.marginTop = "5vh";
+            container.innerHTML = '<h2 style="letter-spacing:3px;">🛰️ [ORBITAL SATELLITE HIJACK PROTOCOL]</h2>' +
+                                   '<div style="font-size:16px; color:#00aa00; margin-bottom:15px;">正在強制劫持下行微波，同步調取實時光學視訊源...</div>' +
+                                   '<div class="video-container">' +
+                                   '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/' + chosenVideoId + '?autoplay=1&mute=1&controls=0&loop=1&playlist=' + chosenVideoId + '" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>' +
+                                   '</div>' +
+                                   '<div id="sat-progress-bar" style="width:60%; margin:0 auto; border:1px solid #00ff00; padding:3px; text-align:left;"><div id="sat-fill" style="width:0%; background:#00ff00; height:20px;"></div></div>' +
+                                   '<div id="sat-pct" style="margin-top:10px; font-size:24px;">0%</div>' +
+                                   '<div id="sat-details" style="margin-top:20px; font-size:14px; text-align:left; width:50%; margin-left:auto; margin-right:auto; color:#33ff33; height:120px; overflow-y:auto;"></div>';
+            fxLayer.appendChild(container);
+            
+            var fill = document.getElementById("sat-fill");
+            var pctText = document.getElementById("sat-pct");
+            var details = document.getElementById("sat-details");
+            
+            var timer = setInterval(function() {
+                pct += 2;
+                fill.style.width = pct + "%";
+                pctText.textContent = pct + "%";
+                if(pct % 10 === 0) {
+                    details.innerHTML += "&gt;&gt; 量子加密金鑰破譯中... 位元組比對: [OK] | 鎖定軌道經緯度: " + (Math.random()*180).toFixed(4) + "°N, " + (Math.random()*90).toFixed(4) + "°E<br>";
+                    details.scrollTop = details.scrollHeight;
+                }
+                if(pct >= 100) {
+                    clearInterval(timer);
+                    details.innerHTML += "<br><span style='color:#ffffff; font-size:18px; font-weight:bold;'>🛰️ [HIJACK SUCCESS] 衛星控制鏈已成功切換！即時下行廣播影像接收中。</span><br><button onclick='backToC2()' style='background:#003300; color:#00ff00; border:1px solid #00ff00; padding:10px; margin-top:15px; cursor:pointer;'>返回主控面板</button>";
+                    details.scrollTop = details.scrollHeight;
+                }
+            }, 60);
+        }
+        
+        /* 3. 💣 自毀程序 */
+        function triggerNuke() {
+            openFxLayer();
+            fxLayer.classList.add("nuke-alert-active");
+            
+            var nukeTitle = document.createElement("div"); nukeTitle.className = "nuke-title";
+            nukeTitle.textContent = "☣️ [CRITICAL SYSTEM OVERLOAD - HOSTILE NUKE COMMAND] ☣️";
+            fxLayer.appendChild(nukeTitle);
+            
+            var nukeCount = document.createElement("div"); nukeCount.className = "nuke-countdown";
+            nukeCount.textContent = "5"; fxLayer.appendChild(nukeCount);
+            
+            var countdown = 5;
+            var timer = setInterval(function() {
+                countdown--;
+                if(countdown >= 0) nukeCount.textContent = countdown;
+                if(countdown < 0) {
+                    clearInterval(timer);
+                    nukeTitle.textContent = "💥 [CORE COLLAPSE - SERVER DESTROYED] 💥";
+                    nukeCount.style.display = "none";
+                    document.body.className = "screen-collapse"; 
+                    setTimeout(function() { location.reload(); }, 600); 
+                }
+            }, 800);
+        }
+        
+        /* 4. 🎭 換臉偽裝 */
+        function triggerClean() { openFxLayer(); fxLayer.innerHTML = "<div style='text-align:center; margin-top:30vh; font-size:20px; color:#00ff00;'>[+] 正在抹除反向連線 Session 指標...<br>[+] 正在清洗 C2 本地歷史緩衝暫存區...<br>[+] 軌跡完全清除完畢。系統即將重新啟動...</div>"; setTimeout(function() { location.reload(); }, 1200); }
+        
+        function backToC2() { fxLayer.style.display = "none"; c2Dashboard.style.display = "grid"; document.getElementById("c2-cmd-field").focus(); }
+        function logC2(text) { const p = document.createElement("p"); p.style.margin = "4px 0"; p.innerHTML = text; c2Output.appendChild(p); c2Output.scrollTop = c2Output.scrollHeight; }
+        
+        function handleC2Command(e) {
+            if (e.key === "Enter") {
+                var input = document.getElementById("c2-cmd-field"); var cmd = input.value.trim().toLowerCase(); if (!cmd) return;
+                logC2("<span style='color:#ffffff'>c2-admin# " + input.value + "</span>"); input.value = "";
+                if (cmd === "help") logC2("內建高級指令: <b>download_all</b>, <b>clear</b>");
+                else if (cmd === "download_all") logC2("[+] 建立多線程快取隊列... [■■■■■■■■■■■■■■■■] 100% 傳輸完成。");
+                else if (cmd === "clear") c2Output.innerHTML = "";
+                else logC2("[!] 指令已封裝為虛擬例外，異步盲發送至主機端...");
+            }
+        }
+        setTimeout(function() { hiddenInput.focus(); }, 200);
+    </script>
+</body>
+</html>
+"""
+
+components.html(raw_html_code, height=850)
