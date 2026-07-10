@@ -1,36 +1,4 @@
-import streamlit as st
-import streamlit.components.v1 as components
-import base64
-
-# 1. 網頁頁面初始化設定（強制全螢幕、純黑背景）
-st.set_page_config(page_title="究極黑客控制台 v11.3", page_icon="💀", layout="wide")
-
-# 強制隱藏 Streamlit 的所有原生網頁元件，達成 100% 全螢幕純黑客視窗
-st.markdown(
-    """
-    <style>
-    [data-testid="stHeader"], footer, #MainMenu {visibility: hidden !important;}
-    .stApp {background-color: #000000 !important;}
-    .block-container {padding: 0px !important; max-width: 100% !important; margin: 0px !important;}
-    
-    /* 強制讓元件的內外層容器都具備完整的滾動能力 */
-    [data-testid="stHtmlBlock"], [data-testid="stElementContainer"], iframe {
-        width: 100% !important;
-        height: 100vh !important;
-        display: block !important;
-        border: none !important;
-    }
-    body {
-        overflow: hidden !important;
-    }
-    </style>
-    """, 
-    unsafe_allow_html=True
-)
-
-# 2. 原始 HTML 控制引擎（完全匿名去姓名、具備平滑聚焦滾動機制）
-# 我們將其轉換成 Base64 儲存，避免 Python 三引號 """ 解析特殊字元時報錯
-raw_html_source = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -65,11 +33,12 @@ raw_html_source = """<!DOCTYPE html>
             color: #00ff00;
             font-size: 18px;
             line-height: 1.6;
-            overflow-y: auto;
+            overflow-y: auto; /* 允許內部核心滑動瀏覽 */
             white-space: pre-wrap;
             word-wrap: break-word;
             text-shadow: 0 0 4px #00ff00;
         }
+        /* 隱藏原生捲軸但保留滑動能力 */
         #terminal::-webkit-scrollbar {
             display: none;
         }
@@ -116,7 +85,7 @@ raw_html_source = """<!DOCTYPE html>
     <canvas id="canvas"></canvas>
     <div id="terminal">
         <div class="log-line">==================================================================</div>
-        <div class="log-line">💀 首席網路安全專家：[REDACTED] | 核心作戰控制終端 v11.3</div>
+        <div class="log-line">💀 首席網路安全專家：[REDACTED] | 核心作戰控制終端 v11.4</div>
         <div class="log-line">==================================================================</div>
         <div class="log-line">&gt;&gt; CORE STATUS: READY</div>
         <div class="log-line">&gt;&gt; INFILTRATION LEVEL: INITIALIZED</div>
@@ -190,4 +159,28 @@ raw_html_source = """<!DOCTYPE html>
 
         function appendNewLine() {
             if (isUnlocked) return;
-            if
+            if (lineCount >= 45) { // 生成足夠代碼後自動判定解鎖
+                isUnlocked = true;
+                successOverlay.style.display = 'block';
+                return;
+            }
+            const rawText = generateRandomHackerLine();
+            const div = document.createElement('div');
+            div.className = 'log-line';
+            div.textContent = rawText;
+            dynamicContent.appendChild(div);
+            
+            // 🚀 【極致平滑聚焦引擎】：強行推動終端機容器聚焦，最新的一行永遠在底端，並且使用者可以自由用滑鼠滾輪往上、下移動！
+            inputLine.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+
+        document.body.addEventListener('click', () => { hiddenInput.focus(); });
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Shift' && e.key !== 'Control' && e.key !== 'Alt' && e.key !== 'Meta') {
+                for(let i=0; i<3; i++) { appendNewLine(); }
+            }
+        });
+        setTimeout(() => { hiddenInput.focus(); }, 200);
+    </script>
+</body>
+</html>
