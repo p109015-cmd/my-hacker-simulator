@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # 1. 網頁頁面初始化設定（強制全螢幕、純黑背景）
-st.set_page_config(page_title="究極黑客控制台 v17.4", page_icon="💀", layout="wide")
+st.set_page_config(page_title="究極黑客控制台 v18.0", page_icon="💀", layout="wide")
 
 # 強制隱藏 Streamlit 的所有原生網頁 UI
 st.markdown(
@@ -30,7 +30,7 @@ raw_html_code = """
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>Matrix Terminal Command Center v17.4</title>
+    <title>Matrix Terminal Command Center v18.0</title>
     <style>
         * { box-sizing: border-box; }
         body, html {
@@ -58,15 +58,32 @@ raw_html_code = """
         @keyframes glitch-flash { 0%, 100% { opacity: 1; background: rgba(255,0,85,0.15); } 50% { opacity: 0.3; background: transparent; } }
         .status-panel { color: #1aff1a; font-weight: bold; background: rgba(0, 40, 0, 0.4); padding: 10px; border-left: 4px solid #00ff00; margin-top: 15px; margin-bottom: 15px; }
         
-        /* F1 特製隱藏後門打字框彈窗 */
+        /* 🔒 優化後的密碼面板：科技感毛玻璃 + 呼吸燈 */
         #backdoor-modal {
-            display: none; position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0, 20, 0, 0.95); border: 2px solid #00ff00; padding: 25px; z-index: 10000;
-            box-shadow: 0 0 30px rgba(0,255,0,0.7); width: 350px; text-align: center;
+            display: none; position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0, 15, 0, 0.9); 
+            border: 1px solid #00ff00; 
+            padding: 30px; z-index: 10000;
+            box-shadow: 0 0 25px rgba(0,255,0,0.3), inset 0 0 15px rgba(0,255,0,0.2); 
+            width: 400px; text-align: center;
+            border-radius: 4px;
+            animation: modal-glow 3s infinite alternate;
+        }
+        @keyframes modal-glow {
+            0% { box-shadow: 0 0 20px rgba(0,255,0,0.2); border-color: #00aa00; }
+            100% { box-shadow: 0 0 35px rgba(0,255,0,0.5); border-color: #00ff00; }
         }
         .backdoor-input {
             width: 100%; background: #000; border: 1px solid #00ff00; color: #00ff00;
-            padding: 10px; font-family: inherit; font-size: 18px; text-align: center; outline: none; margin-top: 15px;
+            padding: 12px; font-family: inherit; font-size: 20px; text-align: center; 
+            outline: none; margin-top: 20px; letter-spacing: 5px;
+            box-shadow: inset 0 0 5px rgba(0,255,0,0.5);
+        }
+        .backdoor-input:focus { border-color: #ffffff; box-shadow: 0 0 10px rgba(0,255,0,0.8); }
+        .modal-error-effect { animation: modal-error-shake 0.15s 3 !important; border-color: #ff0055 !important; }
+        @keyframes modal-error-shake {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); background: rgba(30, 0, 10, 0.95); }
+            50% { transform: translate(-48%, -49%) scale(1.02); background: rgba(100, 0, 30, 0.95); }
         }
 
         /* 突發事件過載死亡畫面 */
@@ -143,14 +160,15 @@ raw_html_code = """
     <canvas id="nukeBlastCanvas"></canvas>
     
     <div id="backdoor-modal">
-        <div style="font-size:14px; color:#00ff00; font-weight:bold; letter-spacing:1px;">⚠️ [OVERRIDE BYPASS TERMINAL]</div>
-        <div style="font-size:12px; color:#ff0055; margin-top:5px; font-weight:bold; animation:blink 0.5s infinite;">警告：密碼錯誤將立即引發系統自爆！</div>
-        <input type="password" id="backdoor-field" class="backdoor-input" placeholder="********" onkeydown="checkBackdoorToken(event)">
+        <div style="font-size:15px; color:#00ff00; font-weight:bold; letter-spacing:2px;">⚠️ [OVERRIDE BYPASS MATRIX]</div>
+        <div style="font-size:11px; color:#88ff88; margin-top:6px; opacity:0.8;">ENTER ACCESS KEY TO BYPASS THE COOLDOWN SEQUENCE</div>
+        <input type="password" id="backdoor-field" class="backdoor-input" placeholder="••••" maxlength="7" onkeydown="checkBackdoorToken(event)">
+        <div style="font-size:11px; color:#ff0055; margin-top:15px; font-weight:bold; animation:blink 0.6s infinite;">[ ESCAPE TO CANCEL ]</div>
     </div>
 
     <div id="terminal">
         <div class="log-line">========================================================================================</div>
-        <div class="log-line">💀 遠端深層控制鏈主控台 v17.4 | 侵入成功後將自動解鎖 C2 全功能戰略面板</div>
+        <div class="log-line">💀 遠端深層控制鏈主控台 v18.0 | 侵入成功後將自動解鎖 C2 全功能戰略面板</div>
         <div class="log-line">========================================================================================</div>
         <div id="dynamic-content"></div>
         <div id="status-display" class="status-panel">目前進度: [ 🧭 PHASE 1: 初始化全網子網段探測機制... ] [0%]</div>
@@ -160,7 +178,7 @@ raw_html_code = """
     <input type="text" id="hidden-input" autofocus>
     
     <div id="c2-dashboard">
-        <div class="panel-header">💀 [GHOST-NETWORK CENTRAL C2 PANEL v17.4] - ACCESS GRANTED 💀</div>
+        <div class="panel-header">💀 [GHOST-NETWORK CENTRAL C2 PANEL v18.0] - ACCESS GRANTED 💀</div>
         <div class="panel-main">
             <div class="control-side">
                 <div style="font-weight:bold; border-bottom: 1px solid #00ff00; padding-bottom:5px; margin-bottom:5px;">[ 戰略後門操控模組 ]</div>
@@ -173,8 +191,8 @@ raw_html_code = """
             </div>
             <div class="console-side">
                 <div class="console-output" id="c2-output">
-                    [SYSTEM] 成功對接主機。點擊左側按鈕即可切換至【獨立全黑底功能模式】下達戰略威脅...<br>
-                    提示指令：help, download_all, clear
+                    [SYSTEM] 成功對接主機。輸入上方常用按鈕，或在下方鍵入自訂指令。<br>
+                    💡 輸入 <span style="color:#fff; font-weight:bold;">help</span> 可以檢視全新實作的隱藏指令集。
                 </div>
                 <div class="console-input-area">
                     <span>c2-admin#</span>
@@ -234,12 +252,8 @@ raw_html_code = """
         
         var lineCount = 0; var isUnlocked = false; var maxLines = 500;
         var alertCount = 0; var isDead = false;
-        var radarIntervalId = null; 
-        var blastIntervalId = null;
-        
-        var audioCtx = null;
-        var noiseNode = null; 
-        var sirenIntervalId = null; // 空襲警報循環定時器
+        var radarIntervalId = null; var blastIntervalId = null;
+        var audioCtx = null; var noiseNode = null; var sirenIntervalId = null;
         
         function initAudio() { if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } }
         
@@ -255,26 +269,18 @@ raw_html_code = """
             } catch(e) {}
         }
         
-        // 特製：空襲警報連續上揚下滑音效
         function startAirSiren() {
             try {
                 initAudio(); if (!audioCtx) return;
                 var osc = audioCtx.createOscillator(); var gainNode = audioCtx.createGain();
-                osc.type = "sawtooth"; // 鋸齒波，極具侵略性
-                gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                osc.connect(gainNode); gainNode.connect(audioCtx.destination);
-                osc.start();
-                
+                osc.type = "sawtooth"; gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                osc.connect(gainNode); gainNode.connect(audioCtx.destination); osc.start();
                 var t = audioCtx.currentTime;
-                // 模擬防空警報音調上下起伏
                 for(var i=0; i<6; i++) {
                     osc.frequency.linearRampToValueAtTime(650, t + i*1.0 + 0.5);
                     osc.frequency.linearRampToValueAtTime(300, t + i*1.0 + 1.0);
                 }
-                
-                sirenIntervalId = setTimeout(function() {
-                    try { osc.stop(); } catch(e){}
-                }, 6000);
+                sirenIntervalId = setTimeout(function() { try { osc.stop(); } catch(e){} }, 6000);
             } catch(e){}
         }
         
@@ -288,13 +294,11 @@ raw_html_code = """
                 noiseNode = audioCtx.createBufferSource(); noiseNode.buffer = noiseBuffer; noiseNode.loop = true;
                 var filter = audioCtx.createBiquadFilter(); filter.type = "bandpass"; filter.frequency.value = 1000;
                 var gain = audioCtx.createGain(); gain.gain.value = 0.02;
-                noiseNode.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
-                noiseNode.start();
+                noiseNode.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination); noiseNode.start();
             } catch(e) {}
         }
         
         function stopStaticNoise() { if (noiseNode) { try { noiseNode.stop(); } catch(e){} noiseNode = null; } }
-
         function triggerTerminalShake() { terminal.classList.add("shake"); setTimeout(function() { terminal.classList.remove("shake"); }, 400); }
         
         function enterC2Panel() {
@@ -359,24 +363,29 @@ raw_html_code = """
             }
         });
         
+        // 🔒 密碼驗證邏輯：錯誤時觸發特殊的 Glitch 動畫 + 警告低音
         function checkBackdoorToken(e) {
             if (e.key === "Enter") {
                 if (backdoorField.value === "1030622") {
                     lineCount = maxLines; statusDisplay.textContent = "目前進度: [ ⚡ PHASE 5: 核心矩陣協議破解中... ] [100%]";
                     setTimeout(function() { enterC2Panel(); }, 300);
-                } else { triggerMeltdownBurn(); }
-            } else if (e.key === "Escape") { backdoorField.value = ""; backdoorModal.style.display = "none"; hiddenInput.focus(); }
+                } else {
+                    // 密碼錯誤！面板產生紅色震動特效與低頻錯誤音，但不直接熔毀
+                    playRadarBeep(110, 0.3, 0.5);
+                    backdoorModal.classList.add("modal-error-effect");
+                    backdoorField.value = "";
+                    setTimeout(function() { backdoorModal.classList.remove("modal-error-effect"); }, 500);
+                }
+            } else if (e.key === "Escape") {
+                backdoorField.value = ""; backdoorModal.style.display = "none"; hiddenInput.focus();
+            }
         }
 
-        function openFxLayer() { 
-            stopAllEffects(); c2Dashboard.style.display = "none"; fxLayer.style.display = "block"; fxLayer.innerHTML = ""; fxLayer.className = ""; 
-        }
-
+        function openFxLayer() { stopAllEffects(); c2Dashboard.style.display = "none"; fxLayer.style.display = "block"; fxLayer.innerHTML = ""; fxLayer.className = ""; }
         function stopAllEffects() {
             clearInterval(radarIntervalId); radarIntervalId = null;
             clearInterval(blastIntervalId); blastIntervalId = null;
-            clearTimeout(sirenIntervalId); sirenIntervalId = null;
-            stopStaticNoise();
+            clearTimeout(sirenIntervalId); sirenIntervalId = null; stopStaticNoise();
             document.getElementById("nukeBlastCanvas").style.display = "none";
         }
         
@@ -442,74 +451,37 @@ raw_html_code = """
             }, 30);
         }
         
-        /* 究極新增：引爆戰略核導彈序列 */
         function triggerRealNukeLaunch() {
-            openFxLayer(); fxLayer.classList.add("nuke-alert-active");
-            startAirSiren(); // 觸發刺耳鋸齒空襲警報聲！
-            
+            openFxLayer(); fxLayer.classList.add("nuke-alert-active"); startAirSiren();
             var nukeTitle = document.createElement("div"); nukeTitle.className = "nuke-title"; 
             nukeTitle.innerHTML = "☢️ [STRATEGIC THERMONUCLEAR MISSILE LAUNCH SEQUENCE] ☢️<br><span style='font-size:16px; color:#fff;'>警告：全球核打擊指令已下達，目標城市已鎖定，無授權不可撤銷！</span>"; 
             fxLayer.appendChild(nukeTitle);
-            
-            var nukeCount = document.createElement("div"); nukeCount.className = "nuke-countdown"; nukeCount.textContent = "5"; 
-            fxLayer.appendChild(nukeCount);
-            
+            var nukeCount = document.createElement("div"); nukeCount.className = "nuke-countdown"; nukeCount.textContent = "5"; fxLayer.appendChild(nukeCount);
             var countdown = 5;
             var timer = setInterval(function() {
                 countdown--;
-                if(countdown >= 0) {
-                    nukeCount.textContent = countdown;
-                    playRadarBeep(120, 0.15, 0.4); // 重低音倒數
-                }
-                if(countdown < 0) {
-                    clearInterval(timer);
-                    renderHugeNukeBlast(); // 倒數結束，觸發震撼全螢幕 Canvas 核爆粒子衝擊波！
-                }
+                if(countdown >= 0) { nukeCount.textContent = countdown; playRadarBeep(120, 0.15, 0.4); }
+                if(countdown < 0) { clearInterval(timer); renderHugeNukeBlast(); }
             }, 1000);
         }
         
-        // 純 Canvas 全螢幕核彈衝擊波擴散與劇烈閃爍特效
         function renderHugeNukeBlast() {
-            fxLayer.style.display = "none"; // 隱藏文字層，浮現全螢幕發射 Canvas
-            var bCanvas = document.getElementById("nukeBlastCanvas");
-            bCanvas.width = window.innerWidth; bCanvas.height = window.innerHeight;
-            bCanvas.style.display = "block";
-            var bCtx = bCanvas.getContext("2d");
-            
-            // 播放極低頻毀滅震裂音效
-            playRadarBeep(45, 1.8, 0.8);
-            playRadarBeep(55, 1.2, 0.8);
-            
-            var frame = 0;
-            var maxFrames = 75; // 爆炸持續約 2.5 秒
-            
+            fxLayer.style.display = "none"; var bCanvas = document.getElementById("nukeBlastCanvas");
+            bCanvas.width = window.innerWidth; bCanvas.height = window.innerHeight; bCanvas.style.display = "block";
+            var bCtx = bCanvas.getContext("2d"); playRadarBeep(45, 1.8, 0.8); playRadarBeep(55, 1.2, 0.8);
+            var frame = 0; var maxFrames = 75;
             blastIntervalId = setInterval(function() {
-                frame++;
-                // 產生劇烈的白/紅/橘交替白熱化閃爍
-                var rand = Math.random();
-                if (frame < 15) {
-                    bCtx.fillStyle = rand > 0.4 ? "#ffffff" : "#ffcc00"; // 最初始的強光盲目效果
-                } else if (frame < 45) {
-                    // 核心火球衝擊波擴散
+                frame++; var rand = Math.random();
+                if (frame < 15) { bCtx.fillStyle = rand > 0.4 ? "#ffffff" : "#ffcc00"; bCtx.fillRect(0,0,bCanvas.width,bCanvas.height); } 
+                else if (frame < 45) {
                     bCtx.fillStyle = "rgba(0,0,0,0.1)"; bCtx.fillRect(0,0,bCanvas.width,bCanvas.height);
                     var radius = (frame - 15) * (bCanvas.width / 30);
                     var grad = bCtx.createRadialGradient(bCanvas.width/2, bCanvas.height/2, 10, bCanvas.width/2, bCanvas.height/2, radius);
-                    grad.addColorStop(0, "rgba(255,255,255,1)");
-                    grad.addColorStop(0.2, "rgba(255,100,0,0.9)");
-                    grad.addColorStop(0.6, "rgba(200,0,50,0.6)");
-                    grad.addColorStop(1, "rgba(0,0,0,0)");
+                    grad.addColorStop(0, "rgba(255,255,255,1)"); grad.addColorStop(0.2, "rgba(255,100,0,0.9)"); grad.addColorStop(0.6, "rgba(200,0,50,0.6)"); grad.addColorStop(1, "rgba(0,0,0,0)");
                     bCtx.fillStyle = grad; bCtx.beginPath(); bCtx.arc(bCanvas.width/2, bCanvas.height/2, radius, 0, Math.PI*2); bCtx.fill();
-                } else {
-                    // 餘燼與輻射塵黑化
-                    bCtx.fillStyle = "rgba(15, 0, 3, 0.15)"; bCtx.fillRect(0,0,bCanvas.width,bCanvas.height);
-                }
-                
+                } else { bCtx.fillStyle = "rgba(15, 0, 3, 0.15)"; bCtx.fillRect(0,0,bCanvas.width,bCanvas.height); }
                 if(frame >= maxFrames) {
-                    clearInterval(blastIntervalId);
-                    bCanvas.style.display = "none";
-                    isDead = true;
-                    fxLayer.style.display = "block";
-                    fxLayer.className = "dead-screen";
+                    clearInterval(blastIntervalId); bCanvas.style.display = "none"; isDead = true; fxLayer.style.display = "block"; fxLayer.className = "dead-screen";
                     fxLayer.innerHTML = "💥 GLOBAL NUKE DETONATED 💥<div class='dead-sub'>戰略核彈已成功引爆，文明指標歸零。按下 [ 小鍵盤 9 ] 重啟終端</div>";
                 }
             }, 33);
@@ -534,14 +506,55 @@ raw_html_code = """
         function backToC2() { stopAllEffects(); fxLayer.style.display = "none"; c2Dashboard.style.display = "grid"; document.getElementById("c2-cmd-field").focus(); }
         function logC2(text) { const p = document.createElement("p"); p.style.margin = "4px 0"; p.innerHTML = text; c2Output.appendChild(p); c2Output.scrollTop = c2Output.scrollHeight; }
         
+        // ⌨️ 全新設計的自訂指令解析模組 (指令集實作)
         function handleC2Command(e) {
             if (e.key === "Enter") {
-                var input = document.getElementById("c2-cmd-field"); var cmd = input.value.trim().toLowerCase(); if (!cmd) return;
-                logC2("<span style='color:#ffffff'>c2-admin# " + input.value + "</span>"); input.value = "";
-                if (cmd === "help") logC2("內建高級指令: <b>download_all</b>, <b>clear</b>");
-                else if (cmd === "download_all") { playRadarBeep(1000, 0.2); logC2("[+] 建立多線程快取隊列... [■■■■■■■■■■■■■■■■] 100% 傳換完成。"); }
-                else if (cmd === "clear") c2Output.innerHTML = "";
-                else logC2("[!] 指令已封裝為虛擬例外，異步盲發送至主機端...");
+                var input = document.getElementById("c2-cmd-field"); 
+                var rawCmd = input.value.trim();
+                var cmd = rawCmd.toLowerCase(); 
+                if (!cmd) return;
+                
+                logC2("<span style='color:#ffffff'>c2-admin# " + rawCmd + "</span>"); 
+                input.value = "";
+                
+                // 1. Help 幫助功能
+                if (cmd === "help") {
+                    logC2("<span style='color:#ffff00'>======= 內部特權自訂指令集 =======</span>");
+                    logC2("<b>scan</b>          - 啟動全網段主機深度漏洞掃描");
+                    logC2("<b>inject [名稱]</b> - 遠端注入特定木馬載荷 (範例: inject trojan)");
+                    logC2("<b>sysinfo</b>       - 獲取受害主機核心硬體架構數據");
+                    logC2("<b>clear</b>         - 清除當前 C2 終端螢幕緩衝");
+                    logC2("<span style='color:#ffff00'>=================================</span>");
+                } 
+                // 2. 自訂指令：scan 掃描
+                else if (cmd === "scan") {
+                    playRadarBeep(800, 0.15);
+                    logC2("<span style='color:#55ff55;'>[+] 正在初始化異步監聽埠掃描...</span>");
+                    setTimeout(function() { logC2("[-] 偵測到 10.0.4.21:80 [HTTP] 存在 CVE-2023-38606 漏洞！"); }, 400);
+                    setTimeout(function() { logC2("[-] 偵測到 10.0.4.99:22 [SSH] 開放，允許密碼爆破。"); }, 800);
+                } 
+                // 3. 自訂指令：inject 木馬注入
+                else if (cmd.startsWith("inject ")) {
+                    var payloadName = rawCmd.substring(7); // 保留原本的大小寫名稱
+                    playRadarBeep(350, 0.4);
+                    logC2("<span style='color:#ff5555;'>[!] 警告：正在編譯惡意載荷 [" + payloadName + "]...</span>");
+                    setTimeout(function() { logC2("[+] 反向 Shell 連線成功！主機已在掌控之中。"); }, 900);
+                } 
+                // 4. 自訂指令：sysinfo 系統資訊
+                else if (cmd === "sysinfo") {
+                    playRadarBeep(600, 0.05);
+                    logC2("OS: GNU/Linux 5.15.0-88-generic x86_64");
+                    logC2("CPU: AMD EPYC 7R32 (32 Cores) @ 2.8GHz");
+                    logC2("Uptime: 142 days, 11 hours, 4 minutes");
+                } 
+                // 5. 基礎功能：clear
+                else if (cmd === "clear") {
+                    c2Output.innerHTML = "";
+                } 
+                // 6. 指令未找到
+                else {
+                    logC2("<span style='color:#ff0055;'>[!] 未知指令: '" + rawCmd + "'。輸入 'help' 獲取指令支援。</span>");
+                }
             }
         }
         setTimeout(function() { hiddenInput.focus(); }, 200);
