@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # 1. 網頁頁面初始化設定（強制全螢幕、純黑背景）
-st.set_page_config(page_title="究極黑客控制台 v11.5", page_icon="💀", layout="wide")
+st.set_page_config(page_title="究極黑客控制台 v11.6", page_icon="💀", layout="wide")
 
 # 強制隱藏 Streamlit 的所有原生網頁 UI
 st.markdown(
@@ -27,7 +27,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# 2. 透過最安全的陣列相加機制，徹底粉碎 Python 的字串跳脫臭蟲與找不到檔案的問題
+# 2. 透過安全陣列相加機制，部署超級加長版的黑客日誌引擎
 html_parts = [
     '<!DOCTYPE html>',
     '<html lang="zh-TW">',
@@ -114,11 +114,12 @@ html_parts = [
     '<body>',
     '    <canvas id="canvas"></canvas>',
     '    <div id="terminal">',
-    '        <div class="log-line">==================================================================</div>',
-    '        <div class="log-line">💀 首席網路安全專家：[REDACTED] | 核心作戰控制終端 v11.5</div>',
-    '        <div class="log-line">==================================================================</div>',
-    '        <div class="log-line">&gt;&gt; CORE STATUS: READY</div>',
-    '        <div class="log-line">&gt;&gt; INFILTRATION LEVEL: INITIALIZED</div>',
+    '        <div class="log-line">=================================================================================</div>',
+    '        <div class="log-line">💀 首席網路安全專家：[REDACTED] | 核心控制終端戰略部署面板 v11.6</div>',
+    '        <div class="log-line">=================================================================================</div>',
+    '        <div class="log-line">&gt;&gt; CORE STATUS: ONLINE // SYSTEM INTEGRITY: SECURE</div>',
+    '        <div class="log-line">&gt;&gt; INFILTRATION PROTOCOL: ACTIVE [ANONYMOUS NODE]</div>',
+    '        <div class="log-line">&gt;&gt; SUBSYSTEMS LOADED: QUANTUM CRYPTO / SHADOW PROXY v2.4</div>',
     '        <div class="log-line"></div>',
     '        <div id="dynamic-content"></div>',
     '        <div id="input-line">root@ghost-terminal:~# <span class="cursor"></span></div>',
@@ -126,9 +127,9 @@ html_parts = [
     '    <input type="text" id="hidden-input" autofocus>',
     '    <div id="success-overlay">',
     '        💀 [SYSTEM UNLOCKED] 你已成功侵入 💀<br>',
-    '        ========================================<br>',
+    '        ================================================<br>',
     '        ACCESS GRANTED // 核心控制權限獲取成功！<br>',
-    '        指揮官：ANONYMOUS OPERATOR 已全面接管。',
+    '        指揮官：ANONYMOUS OPERATOR 已全面接管目標主機。',
     '    </div>',
     '    <script>',
     '        const canvas = document.getElementById("canvas");',
@@ -164,52 +165,28 @@ html_parts = [
     '        const inputLine = document.getElementById("input-line");',
     '        const hiddenInput = document.getElementById("hidden-input");',
     '        const successOverlay = document.getElementById("success-overlay");',
-    '        const tags = ["INFO", "WARN", "SYSTEM", "INJECT", "DECRYPT", "BYPASS", "CONNECT", "EXPLOIT"];',
-    '        const actions = ["正在偵測通訊埠漏洞", "成功繞過防火牆安全認證層", "攔截核心加密資料庫封包", "正在注入隱形後門 Trojan.Core", "啟動量子演算法破解私鑰", "成功切換虛擬本地代理網段", "遠端溢位攻擊成功", "正在強制同步資料傳輸緩衝區", "核心偽裝層部署完畢", "全面癱瘓伺服器流量"];',
-    '        const targets = ["nasa.gov.secure", "pentagon.admin.node", "mainframe.central.bank", "global.dns.server", "crypto.vault.ledger", "security.gateway.firewall", "backbone.root.switch", "cloud.matrix.core"];',
-    '        const scripts_pool = ["for (let i = 0; i < 1024; i++) { malloc(sizeof(payload)); }", "connect_to_proxy_node(\'SOCKS5://103.24.51.9\', port=22);", "if (auth_token == \'BYPASS_TRUE\') { grant_root_access(); }", "AES_256_Decrypt(key_matrix, cipher_text, chunk_size=4096);", "iptables -A INPUT -s 127.0.0.1 -j DROP", "send_packet_stream(target_ip, protocol=\'UDP\', packets=250000);"];',
-    '        let lineCount = 0;',
-    '        let isUnlocked = false;',
-    '        function generateRandomHackerLine() {',
-    '            lineCount++;',
-    '            const hexAddr = "0x" + Math.floor(Math.random() * 16777215).toString(16).toUpperCase() + Math.floor(Math.random() * 16777215).toString(16).toUpperCase();',
-    '            const rand = Math.random();',
-    '            if (rand < 0.35) {',
-    '                return "[" + tags[Math.floor(Math.random() * tags.length)] + "] [MEM:" + hexAddr + "] " + actions[Math.floor(Math.random() * actions.length)] + " >> 目標: " + targets[Math.floor(Math.random() * targets.length)] + "...";',
-    '            } else if (rand < 0.7) {',
-    '                return "[CODE_STR] [ADDR:" + hexAddr + "]  " + scripts_pool[Math.floor(Math.random() * scripts_pool.length)];',
-    '            } else {',
-    '                return "[DECRYPT] [BLOCK:" + hexAddr + "] 演算破解中 [" + "■".repeat(Math.floor(Math.random() * 15) + 10) + "] " + (Math.floor(Math.random() * 40) + 60) + "% SUCCESS...";',
-    '            }',
-    '        }',
-    '        function appendNewLine() {',
-    '            if (isUnlocked) return;',
-    '            if (lineCount >= 40) {',
-    '                isUnlocked = true;',
-    '                successOverlay.style.display = "block";',
-    '                return;',
-    '            }',
-    '            const rawText = generateRandomHackerLine();',
-    '            const div = document.createElement("div");',
-    '            div.className = "log-line";',
-    '            div.textContent = rawText;',
-    '            dynamicContent.appendChild(div);',
-    '            inputLine.scrollIntoView({ behavior: "smooth", block: "end" });',
-    '        }',
-    '        document.body.addEventListener("click", () => { hiddenInput.focus(); });',
-    '        document.addEventListener("keydown", (e) => {',
-    '            if (e.key !== "Shift" && e.key !== "Control" && e.key !== "Alt" && e.key !== "Meta") {',
-    '                for(let i=0; i<3; i++) { appendNewLine(); }',
-    '            }',
-    '        });',
-    '        setTimeout(() => { hiddenInput.focus(); }, 200);',
-    '    </script>',
-    '</body>',
-    '</html>'
-]
-
-# 組合出完美的 HTML 代碼
-final_html_string = "\n".join(html_parts)
-
-# 3. 完美渲染網頁控制面板（100% 規避所有語法解析問題，且具備完美的置底平滑滑動）
-components.html(final_html_string, height=850)
+    
+    # 擴充後的超豐富標籤、動作、與目標庫
+    '        const tags = ["INFO", "WARN", "SYSTEM", "INJECT", "DECRYPT", "BYPASS", "CONNECT", "EXPLOIT", "STDOUT", "KERNEL", "TRACE", "NETWORK", "SECURITY", "OVERFLOW"];',
+    '        const actions = [',
+    '            "正在偵測通訊埠漏洞", "成功繞過防火牆安全認證層", "攔截核心加密資料庫封包", ',
+    '            "正在注入隱形後門 Trojan.Core", "啟動量子演算法破解私鑰", "成功切換虛擬本地代理網段", ',
+    '            "遠端溢位攻擊成功", "正在強制同步資料傳輸緩衝區", "核心偽裝層部署完畢", "全面癱瘓伺服器流量",',
+    '            "正在進行堆疊溢位漏洞探測 (Stack Smashing Check)", "劫持核心控制流程指標 (RIP Pointer Hijacking)",',
+    '            "正在執行多重路由跳躍偽裝 (Onion Routing Encapsulation)", "成功提取記憶體分頁表結構 (Paging Table Dump)",',
+    '            "發射阻斷服務同步攻擊流 (SYN-Flood Stream Broadcaster)", "破譯 SSL/TLS 安全交握憑證鏈",',
+    '            "注入無權限惡意符號鏈結 (Symbolic Link Invalidation)", "繞過核心地址空間隨機化 (ASLR Bypass Matrix)",',
+    '            "執行沙盒環境溢位逃逸處理 (Sandbox Escape Exploit)", "重組已被中斷的核心 TCP 分段封包"',
+    '        ];',
+    '        const targets = [',
+    '            "nasa.gov.secure", "pentagon.admin.node", "mainframe.central.bank", "global.dns.server", ',
+    '            "crypto.vault.ledger", "security.gateway.firewall", "backbone.root.switch", "cloud.matrix.core",',
+    '            "root@nsa.internal.gateway", "mainframe.telecom.switchboard", "satellite.orbit.control.node",',
+    '            "darknet.relay.onion-09", "core.kernel.ring0-scheduler", "isolated.vault.airgapped.subnet"',
+    '        ];',
+    '        const scripts_pool = [',
+    '            "for (int i = 0; i < 1024; i++) { malloc(sizeof(payload)); }", ',
+    '            "connect_to_proxy_node(\'SOCKS5://103.24.51.9\', port=22);", ',
+    '            "if (auth_token == \'BYPASS_TRUE\') { grant_root_access(); }", ',
+    '            "AES_256_Decrypt(key_matrix, cipher_text, chunk_size=4096);", ',
+    '            "iptables -A INPUT -s 127
