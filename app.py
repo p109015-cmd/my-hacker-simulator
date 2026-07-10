@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # 1. 網頁頁面初始化設定
-st.set_page_config(page_title="賴以航 究極黑客控制台 v9.1", page_icon="💀", layout="wide")
+st.set_page_config(page_title="賴以航 究極黑客控制台 v10.0", page_icon="💀", layout="wide")
 
 # 強制隱藏 Streamlit 的所有原生網頁元件，達成全螢幕純黑客視窗
 st.markdown("""
@@ -14,13 +14,13 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 2. 注入永不重複的「動態混亂矩陣代碼生成引擎」（修正字串衝突版本）
+# 2. 注入永不重複、自動滿頁滾動、敲擊到程度顯示成功的「數位矩陣控制引擎」
 html_code = """
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>Matrix Terminal Infinite</title>
+    <title>Matrix Terminal Ultimate</title>
     <style>
         * { box-sizing: border-box; }
         body, html {
@@ -39,7 +39,7 @@ html_code = """
             top: 0;
             left: 0;
             z-index: 1;
-            opacity: 0.2;
+            opacity: 0.15;
         }
         /* 終端機文字顯示層 */
         #terminal {
@@ -49,14 +49,18 @@ html_code = """
             width: 100%;
             height: 100vh;
             z-index: 2;
-            padding: 25px;
+            padding: 30px;
             color: #00ff00;
-            font-size: 17px;
+            font-size: 18px;
             line-height: 1.6;
-            overflow-y: auto;
+            overflow-y: scroll; /* 允許垂直滾動 */
             white-space: pre-wrap;
             word-wrap: break-word;
             text-shadow: 0 0 4px #00ff00;
+        }
+        /* 隱藏滾動條，讓畫面看起來更像純粹的核心終端 */
+        #terminal::-webkit-scrollbar {
+            display: none;
         }
         /* 游標閃爍特效 */
         .cursor {
@@ -71,6 +75,24 @@ html_code = """
             0%, 49% { background-color: #00ff00; }
             50%, 100% { background-color: transparent; }
         }
+        /* 成功解鎖的大型華麗彈窗樣式 */
+        #success-overlay {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 999;
+            background-color: rgba(0, 0, 0, 0.9);
+            border: 3px solid #00ff00;
+            padding: 40px;
+            text-align: center;
+            color: #00ff00;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: 0 0 30px #00ff00;
+            letter-spacing: 2px;
+        }
         #hidden-input {
             position: absolute;
             opacity: 0;
@@ -84,8 +106,15 @@ html_code = """
     <div id="terminal"></div>
     <input type="text" id="hidden-input" autofocus>
 
+    <div id="success-overlay">
+        💀 [SYSTEM UNLOCKED] 💀<br>
+        ========================================<br>
+        ACCESS GRANTED // 核心控制權限獲取成功！<br>
+        指揮官：賴以航 (Yi-Hang Lai) 已接管系統。
+    </div>
+
     <script>
-        // === 1. 經典 Matrix 數位雨引擎 ===
+        // === 1. Matrix 數位雨引擎 ===
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
@@ -120,11 +149,12 @@ html_code = """
         setInterval(drawMatrix, 30);
 
 
-        // === 2. 隨機代碼拼裝演算法 ===
+        // === 2. 永不重複隨機代碼 + 自動滾動 + 成功觸發引擎 ===
         const terminal = document.getElementById('terminal');
         const hiddenInput = document.getElementById('hidden-input');
+        const successOverlay = document.getElementById('success-overlay');
 
-        const tags = ['INFO', 'WARN', 'SYSTEM', 'INJECT', 'DECRYPT', 'BYPASS', 'CONNECT', 'EXPLOIT', 'TRACE_ALERT'];
+        const tags = ['INFO', 'WARN', 'SYSTEM', 'INJECT', 'DECRYPT', 'BYPASS', 'CONNECT', 'EXPLOIT'];
         const actions = [
             '正在偵測通訊埠漏洞', '成功繞過防火牆安全認證層', '攔截核心加密資料庫封包', 
             '正在注入隱形後門 Trojan.Lai', '啟動量子演算法破解私鑰', '成功切換虛擬本地代理網段', 
@@ -143,11 +173,14 @@ html_code = """
             'send_packet_stream(target_ip, protocol=\\'UDP\\', packets=250000);'
         ];
 
-        // 產生完全隨機、絕不重樣的一行黑客代碼
+        let lineCount = 0; // 計算使用者敲了多少行代碼
+        let isUnlocked = false; // 是否已經成功解鎖
+
         function generateRandomHackerLine() {
-            const rand = Math.random();
+            lineCount++; // 每生成一行，計數器加 1
             const hexAddr = '0x' + Math.floor(Math.random() * 16777215).toString(16).toUpperCase() + 
                             Math.floor(Math.random() * 16777215).toString(16).toUpperCase();
+            const rand = Math.random();
             
             if (rand < 0.35) {
                 const tag = tags[Math.floor(Math.random() * tags.length)];
@@ -163,12 +196,13 @@ html_code = """
             }
         }
 
-        // 初始歡迎詞
+        // 歡迎公告
         let currentText = "==================================================================\\n" +
-                          "💀 首席網路安全專家：賴以航 (Yi-Hang Lai) | 無限矩陣控制終端 v9.1\\n" +
+                          "💀 首席網路安全專家：賴以航 (Yi-Hang Lai) | 無限矩陣控制終端 v10.0\\n" +
                           "==================================================================\\n" +
                           ">> SYSTEM STATUS: LIVE CONSOLE ACTIVE\\n" +
-                          ">> 【真・無限模式】：請瘋格亂敲鍵盤，程式碼隨機拼裝，永不重複！\\n\\n" +
+                          ">> 【動態自動滾動】：頁面寫滿時，終端機會全自動流暢向下滑動！\\n" +
+                          ">> 【入侵目標設定】：持續敲擊鍵盤，進度達 100% 後將觸發成功解鎖。\\n\\n" +
                           "lai-hang@matrix-terminal:~# <span class='cursor'></span>";
         
         terminal.innerHTML = currentText;
@@ -177,9 +211,19 @@ html_code = """
         let bufferCharIndex = 0;
 
         function autoTypeHackerCode() {
-            // 每次敲鍵盤，吐出 5 個字元，達到極速流暢敲代碼快感
+            if (isUnlocked) return; // 如果已經解鎖成功，就暫停輸入
+
+            // 每次敲鍵盤吐出 5 個字元
             for (let k = 0; k < 5; k++) {
                 if (!currentLineBuffer || bufferCharIndex >= currentLineBuffer.length) {
+                    
+                    // 🔔 【檢查解鎖閾值】：當隨機代碼生成超過 25 行時，判定成功！
+                    if (lineCount >= 25) {
+                        isUnlocked = true;
+                        successOverlay.style.display = 'block'; // 彈出成功橫幅
+                        return;
+                    }
+                    
                     currentLineBuffer = generateRandomHackerLine();
                     bufferCharIndex = 0;
                 }
@@ -193,10 +237,12 @@ html_code = """
                 terminal.innerHTML = base + nextChar + "<span class=\\"cursor\\"></span>";
                 bufferCharIndex++;
             }
+            
+            // 🔄 【全自動滾動精準校位】：不論頁面有多滿，強制滾動滑到最底端！
             terminal.scrollTop = terminal.scrollHeight;
         }
 
-        // 強制保持輸入焦點
+        // 點擊網頁任意處自動聚焦輸入，保證按鍵百分之百響應
         document.body.addEventListener('click', () => { hiddenInput.focus(); });
         document.addEventListener('keydown', (e) => {
             if (e.key !== 'Shift' && e.key !== 'Control' && e.key !== 'Alt' && e.key !== 'Meta') {
@@ -208,5 +254,5 @@ html_code = """
 </html>
 """
 
-# 3. 渲染全螢幕視窗
+# 3. 渲染控制台視窗
 components.html(html_code, height=1000, scrolling=False)
