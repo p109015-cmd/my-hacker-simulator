@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # 1. 網頁頁面初始化設定
-st.set_page_config(page_title="究極黑客控制台 v10.3", page_icon="💀", layout="wide")
+st.set_page_config(page_title="究極黑客控制台 v10.4", page_icon="💀", layout="wide")
 
 # 強制隱藏 Streamlit 的所有原生網頁元件，達成全螢幕純黑客視窗
 st.markdown("""
@@ -14,7 +14,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 2. 注入純淨作戰風格、完全去姓名的數位矩陣控制引擎
+# 2. 注入純淨作戰風格、完全去姓名且轉義修復的數位矩陣控制引擎
 html_code = """
 <!DOCTYPE html>
 <html lang="zh-TW">
@@ -32,7 +32,6 @@ html_code = """
             height: 100vh;
             font-family: 'Courier New', Courier, monospace;
         }
-        /* 畫布：背景數位雨 */
         canvas {
             display: block;
             position: absolute;
@@ -41,7 +40,6 @@ html_code = """
             z-index: 1;
             opacity: 0.15;
         }
-        /* 終端機文字顯示層 */
         #terminal {
             position: absolute;
             top: 0;
@@ -53,16 +51,14 @@ html_code = """
             color: #00ff00;
             font-size: 18px;
             line-height: 1.6;
-            overflow-y: auto; /* 允許垂直滾動 */
+            overflow-y: auto;
             white-space: pre-wrap;
             word-wrap: break-word;
             text-shadow: 0 0 4px #00ff00;
         }
-        /* 隱藏滾動條，讓畫面看起來更像純核心終端 */
         #terminal::-webkit-scrollbar {
             display: none;
         }
-        /* 游標閃爍特效 */
         .cursor {
             display: inline-block;
             background-color: #00ff00;
@@ -75,7 +71,6 @@ html_code = """
             0%, 49% { background-color: #00ff00; }
             50%, 100% { background-color: transparent; }
         }
-        /* 成功解鎖的大型華麗彈窗樣式 */
         #success-overlay {
             display: none;
             position: fixed;
@@ -166,17 +161,16 @@ html_code = """
         ];
         const scripts_pool = [
             'for (int i = 0; i < 1024; i++) { malloc(sizeof(payload)); }',
-            'connect_to_proxy_node(\\'SOCKS5://103.24.51.9\\', port=22);',
-            'if (auth_token == \\'BYPASS_TRUE\\') { grant_root_access(); }',
+            'connect_to_proxy_node("SOCKS5://103.24.51.9", port=22);',
+            'if (auth_token == "BYPASS_TRUE") { grant_root_access(); }',
             'AES_256_Decrypt(key_matrix, cipher_text, chunk_size=4096);',
             'iptables -A INPUT -s 127.0.0.1 -j DROP # Erasing footprints',
-            'send_packet_stream(target_ip, protocol=\\'UDP\\', packets=250000);'
+            'send_packet_stream(target_ip, protocol="UDP", packets=250000);'
         ];
 
         let lineCount = 0; 
         let isUnlocked = false; 
 
-        // 🛠️ 【即時強制滾動】：監聽內容變更，強制保持最底端
         const observer = new MutationObserver(() => {
             terminal.scrollTop = terminal.scrollHeight;
         });
@@ -195,39 +189,4 @@ html_code = """
                 const target = targets[Math.floor(Math.random() * targets.length)];
                 return '\\n[' + tag + '] [MEM:' + hexAddr + '] ' + action + ' >> 目標: ' + target + '...';
             } else if (rand < 0.7) {
-                return '\\n[CODE_STR] [ADDR:' + hexAddr + ']  ' + scripts_pool[Math.floor(Math.random() * scripts_pool.length)];
-            } else {
-                const progress = '■'.repeat(Math.floor(Math.random() * 15) + 10);
-                const percent = Math.floor(Math.random() * 40) + 60;
-                return '\\n[DECRYPT] [BLOCK:' + hexAddr + '] 演算破解中 [' + progress + '] ' + percent + '% SUCCESS...';
-            }
-        }
-
-        // 頂部狀態列（完全移除姓名，改為神祕作戰代號）
-        let currentText = "==================================================================\\n" +
-                          "💀 首席網路安全專家：[REDACTED] | 核心作戰控制終端 v10.3\\n" +
-                          "==================================================================\\n" +
-                          ">> CORE STATUS: READY\\n" +
-                          ">> INFILTRATION LEVEL: INITIALIZED\\n\\n" +
-                          "root@ghost-terminal:~# <span class='cursor'></span>";
-        
-        terminal.innerHTML = currentText;
-
-        let currentLineBuffer = "";
-        let bufferCharIndex = 0;
-
-        function autoTypeHackerCode() {
-            if (isUnlocked) return; 
-
-            // 每次敲鍵盤吐出 5 個字元
-            for (let k = 0; k < 5; k++) {
-                if (!currentLineBuffer || bufferCharIndex >= currentLineBuffer.length) {
-                    
-                    // 當隨機代碼生成超過 25 行時，判定侵入成功！
-                    if (lineCount >= 25) {
-                        isUnlocked = true;
-                        successOverlay.style.display = 'block'; 
-                        return;
-                    }
-                    
-                    currentLineBuffer = generateRandomHackerLine();
+                return '\\n[CODE_STR] [ADDR:' + hexAddr + ']  ' + scripts_pool
