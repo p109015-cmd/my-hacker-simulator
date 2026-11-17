@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SYS_BREACH // 終端機滲透模擬器 v4.2</title>
+  <title>SYS_BREACH // 終端機滲透模擬器 v4.5</title>
   <style>
     :root {
       --bg-color: #030a04;
@@ -105,6 +105,26 @@
     .cursor { display: inline-block; width: 9px; height: 16px; background: var(--green); vertical-align: middle; animation: blink 0.8s steps(1) infinite; }
     @keyframes blink { 50% { opacity: 0; } }
 
+    #action-menu {
+      display: none;
+      border: 1px solid var(--cyan);
+      background: rgba(2, 18, 22, 0.95);
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 0 18px rgba(0, 240, 255, 0.25);
+    }
+    #action-menu.visible { display: block; }
+    .menu-header { color: var(--cyan); font-weight: bold; margin-bottom: 8px; border-bottom: 1px dashed var(--green-dim); padding-bottom: 4px; }
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 6px; }
+    .menu-item {
+      text-align: left;
+      border: 1px solid var(--green-dark);
+      padding: 6px 10px;
+      color: var(--green);
+      background: rgba(0, 25, 8, 0.7);
+    }
+    .menu-item:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(0, 60, 70, 0.4); }
+
     #cmd-bar { display: none; align-items: center; gap: 8px; border-top: 1px solid var(--green-dark); padding-top: 10px; margin-top: 6px; }
     #cmd-bar.visible { display: flex; }
     #cmd-input { flex: 1; background: transparent; border: none; outline: none; color: var(--green); font-family: var(--font-mono); font-size: 15px; text-shadow: 0 0 6px rgba(0, 255, 65, 0.5); }
@@ -145,10 +165,23 @@
   <main>
     <section id="terminal-wrap" onclick="focusInput()">
       <div id="output"></div>
+
+      <div id="action-menu">
+        <div class="menu-header">// 指令中斷 (PAYLOAD READY) — 請按數字鍵 [1-4] 或點擊選擇行動：</div>
+        <div class="menu-grid">
+          <button class="menu-item" onclick="executeMenuAction('1')">[1] 啟動防火牆滲透 (BREACH)</button>
+          <button class="menu-item" onclick="executeMenuAction('2')">[2] 傾印機密資料庫 (DUMP DB)</button>
+          <button class="menu-item" onclick="executeMenuAction('3')">[3] 切換跳板節點 IP (PROXY HOP)</button>
+          <button class="menu-item" onclick="executeMenuAction('4')">[4] 觸發紅色追蹤警報 (ALERT)</button>
+        </div>
+        <div style="margin-top:6px; font-size:12px; color:var(--green-dim);">提示：按 [ESC] 可關閉選單並繼續敲擊鍵盤輸出程式碼</div>
+      </div>
+
       <div id="auto-hint">
-        <span>提示：隨意敲擊鍵盤任意鍵瘋狂輸出程式碼 | [Enter] 觸發入侵進度條 | [Esc] 關閉彈窗</span>
+        <span>提示：隨意敲擊鍵盤瘋狂輸出程式碼 | [Enter] 叫出行動選單 | [Esc] 關閉選單/彈窗</span>
         <span>熱鍵：[F1] ACCESS GRANTED | [F2] FIREWALL ALERT</span>
       </div>
+
       <div id="cmd-bar">
         <span class="line-ok">root@kali:~#</span>
         <input type="text" id="cmd-input" autocomplete="off" spellcheck="false" placeholder="輸入 help 查看可用指令..." />
@@ -255,11 +288,13 @@ WHERE clearance_level >= 9 AND account_status = 'ACTIVE';
     let currentMode = "auto";
     let codeIndex = 0;
     let isBreaching = false;
+    let isMenuOpen = false;
 
     const outputEl = document.getElementById("output");
     const cmdBarEl = document.getElementById("cmd-bar");
     const cmdInputEl = document.getElementById("cmd-input");
     const autoHintEl = document.getElementById("auto-hint");
+    const actionMenuEl = document.getElementById("action-menu");
     const progressBarEl = document.getElementById("progress-bar");
     const progressTextEl = document.getElementById("progress-text");
 
@@ -267,15 +302,69 @@ WHERE clearance_level >= 9 AND account_status = 'ACTIVE';
       const div = document.createElement("div");
       if (className) div.className = className;
       div.textContent = text;
-      outputEl.appendChild(div);
+      const cursor = outputEl.querySelector(".cursor");
+      if (cursor) {
+        outputEl.insertBefore(div, cursor);
+      } else {
+        outputEl.appendChild(div);
+      }
       outputEl.scrollTop = outputEl.scrollHeight;
+    }
+
+    function openActionMenu() {
+      isMenuOpen = true;
+      actionMenuEl.classList.add("visible");
+      playBeep(760, 0.06, "sine", 0.05);
+      outputEl.scrollTop = outputEl.scrollHeight;
+    }
+
+    function closeActionMenu() {
+      isMenuOpen = false;
+      actionMenuEl.classList.remove("visible");
+    }
+
+    function executeMenuAction(choice) {
+      closeActionMenu();
+      if (choice === "1") {
+        appendLine("\n[EXEC] 啟動自動化防火牆滲透程序...", "line-sys");
+        runBreachSequence();
+      } else if (choice === "2") {
+        appendLine("\n[DUMP] 正在傾印 sys_admin_vault 機密資料表...", "line-warn");
+        const records = [
+          "ID:001 | root_admin   | HASH: $6$9f8a7b6c$... | CLEARANCE: LEVEL-10",
+          "ID:002 | sec_director | HASH: $6$3e2d1c0b$... | CLEARANCE: LEVEL-9",
+          "ID:003 | net_overseer | HASH: $6$7a8b9c0d$... | CLEARANCE: LEVEL-9",
+          "[+] 傾印完成：共 3 筆最高權限憑證已儲存至本地快取。"
+        ];
+        records.forEach((rec, idx) => {
+          setTimeout(() => {
+            appendLine(rec, idx === records.length - 1 ? "line-ok" : "line-dim");
+            playBeep(640 + idx * 80, 0.04, "square", 0.03);
+          }, (idx + 1) * 220);
+        });
+      } else if (choice === "3") {
+        const newIp = [
+          Math.floor(Math.random() * 200) + 20,
+          Math.floor(Math.random() * 255),
+          Math.floor(Math.random() * 255),
+          Math.floor(Math.random() * 254) + 1
+        ].join(".");
+        document.getElementById("stat-ip").textContent = newIp;
+        document.getElementById("stat-trace").textContent = "LOW (" + (Math.floor(Math.random() * 5) + 1) + "%)";
+        appendLine("\n[PROXY] 已透過洋蔥路由切換跳板節點 -> " + newIp, "line-sys");
+        playBeep(920, 0.08, "sine", 0.04);
+      } else if (choice === "4") {
+        appendLine("\n[WARN] 偵測到遠端 IDS 入侵防禦系統反制！", "line-err");
+        triggerAlert(false);
+      }
     }
 
     function clearTerminal() {
       outputEl.innerHTML = "";
       codeIndex = 0;
+      closeActionMenu();
       if (currentMode === "auto") {
-        outputEl.innerHTML = '<span class="line-sys">[SYSTEM READY] 演戲模式已啟動。請開始敲擊鍵盤任意鍵...</span>\n\n<span id="auto-code"></span><span class="cursor"></span>';
+        outputEl.innerHTML = '<span class="line-sys">[SYSTEM READY] 演戲模式已啟動。敲擊鍵盤噴出程式碼，按 [Enter] 選擇行動...</span>\n\n<span id="auto-code"></span><span class="cursor"></span>';
       } else {
         printShellWelcome();
       }
@@ -283,6 +372,7 @@ WHERE clearance_level >= 9 AND account_status = 'ACTIVE';
 
     function switchMode(mode) {
       currentMode = mode;
+      closeActionMenu();
       document.getElementById("btn-mode-auto").classList.toggle("active", mode === "auto");
       document.getElementById("btn-mode-shell").classList.toggle("active", mode === "shell");
       cmdBarEl.classList.toggle("visible", mode === "shell");
@@ -296,12 +386,30 @@ WHERE clearance_level >= 9 AND account_status = 'ACTIVE';
     }
 
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") { closeAlert(); return; }
+      if (e.key === "Escape") {
+        closeAlert();
+        closeActionMenu();
+        return;
+      }
       if (e.key === "F1") { e.preventDefault(); triggerAlert(true); return; }
       if (e.key === "F2") { e.preventDefault(); triggerAlert(false); return; }
+
       if (currentMode !== "auto") return;
       if (e.ctrlKey || e.altKey || e.metaKey) return;
-      if (e.key === "Enter") { e.preventDefault(); runBreachSequence(); return; }
+
+      if (isMenuOpen) {
+        if (["1", "2", "3", "4"].includes(e.key)) {
+          e.preventDefault();
+          executeMenuAction(e.key);
+        }
+        return;
+      }
+
+      if (e.key === "Enter") {
+        e.preventDefault();
+        openActionMenu();
+        return;
+      }
 
       const autoCodeSpan = document.getElementById("auto-code");
       if (!autoCodeSpan) return;
@@ -389,7 +497,7 @@ WHERE clearance_level >= 9 AND account_status = 'ACTIVE';
     };
 
     function printShellWelcome() {
-      appendLine("PhantomOS v4.2.0-amd64 (tty1)", "line-sys");
+      appendLine("PhantomOS v4.5.0-amd64 (tty1)", "line-sys");
       appendLine("輸入 'help' 查看所有可用滲透指令。\n", "line-dim");
     }
 
