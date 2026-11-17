@@ -17,12 +17,7 @@
       --font-mono: "Consolas", "Courier New", "Noto Sans Mono CJK TC", monospace;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
     body {
       background-color: var(--bg-color);
@@ -62,13 +57,7 @@
       flex-wrap: wrap;
     }
 
-    .brand {
-      font-weight: bold;
-      letter-spacing: 1px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .brand { font-weight: bold; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
 
     .status-dot {
       width: 10px;
@@ -79,16 +68,9 @@
       animation: pulse 1.2s infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-    .controls {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
+    .controls { display: flex; gap: 8px; align-items: center; }
 
     button {
       background: transparent;
@@ -101,70 +83,18 @@
       transition: all 0.15s;
     }
 
-    button:hover {
-      background: var(--green-dark);
-      border-color: var(--green);
-      box-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
-    }
+    button:hover { background: var(--green-dark); border-color: var(--green); box-shadow: 0 0 8px rgba(0, 255, 65, 0.4); }
+    button.active { background: var(--green); color: #000; font-weight: bold; text-shadow: none; }
+    button.danger { border-color: #7a1414; color: var(--red); text-shadow: 0 0 6px rgba(255, 42, 42, 0.4); }
+    button.danger:hover { background: rgba(255, 42, 42, 0.2); border-color: var(--red); }
 
-    button.active {
-      background: var(--green);
-      color: #000;
-      font-weight: bold;
-      text-shadow: none;
-    }
+    main { flex: 1; display: grid; grid-template-columns: 1fr 290px; overflow: hidden; }
+    @media (max-width: 820px) { main { grid-template-columns: 1fr; } aside { display: none !important; } }
 
-    button.danger {
-      border-color: #7a1414;
-      color: var(--red);
-      text-shadow: 0 0 6px rgba(255, 42, 42, 0.4);
-    }
-
-    button.danger:hover {
-      background: rgba(255, 42, 42, 0.2);
-      border-color: var(--red);
-    }
-
-    main {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 1fr 290px;
-      overflow: hidden;
-    }
-
-    @media (max-width: 820px) {
-      main {
-        grid-template-columns: 1fr;
-      }
-      aside {
-        display: none !important;
-      }
-    }
-
-    #terminal-wrap {
-      display: flex;
-      flex-direction: column;
-      padding: 16px 20px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    #output {
-      flex: 1;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      word-break: break-all;
-      line-height: 1.5;
-      font-size: 15px;
-      padding-bottom: 12px;
-    }
-
-    #output::-webkit-scrollbar {
-      width: 6px;
-    }
-    #output::-webkit-scrollbar-thumb {
-      background: var(--green-dim);
-    }
+    #terminal-wrap { display: flex; flex-direction: column; padding: 16px 20px; overflow: hidden; position: relative; }
+    #output { flex: 1; overflow-y: auto; white-space: pre-wrap; word-break: break-all; line-height: 1.5; font-size: 15px; padding-bottom: 12px; }
+    #output::-webkit-scrollbar { width: 6px; }
+    #output::-webkit-scrollbar-thumb { background: var(--green-dim); }
 
     .line-sys { color: var(--cyan); }
     .line-warn { color: var(--amber); }
@@ -172,158 +102,33 @@
     .line-ok { color: var(--green); font-weight: bold; }
     .line-dim { color: var(--green-dim); }
 
-    .cursor {
-      display: inline-block;
-      width: 9px;
-      height: 16px;
-      background: var(--green);
-      vertical-align: middle;
-      animation: blink 0.8s steps(1) infinite;
-    }
+    .cursor { display: inline-block; width: 9px; height: 16px; background: var(--green); vertical-align: middle; animation: blink 0.8s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
 
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
+    #cmd-bar { display: none; align-items: center; gap: 8px; border-top: 1px solid var(--green-dark); padding-top: 10px; margin-top: 6px; }
+    #cmd-bar.visible { display: flex; }
+    #cmd-input { flex: 1; background: transparent; border: none; outline: none; color: var(--green); font-family: var(--font-mono); font-size: 15px; text-shadow: 0 0 6px rgba(0, 255, 65, 0.5); }
 
-    #cmd-bar {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      border-top: 1px solid var(--green-dark);
-      padding-top: 10px;
-      margin-top: 6px;
-    }
+    #auto-hint { border-top: 1px solid var(--green-dark); padding-top: 8px; font-size: 12px; color: var(--green-dim); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 
-    #cmd-bar.visible {
-      display: flex;
-    }
+    aside { background: var(--panel-bg); border-left: 1px solid var(--green-dim); padding: 14px; display: flex; flex-direction: column; gap: 16px; font-size: 13px; }
+    .widget { border: 1px solid var(--green-dark); padding: 10px; background: rgba(0, 20, 5, 0.6); }
+    .widget-title { font-size: 12px; color: var(--cyan); margin-bottom: 8px; border-bottom: 1px dashed var(--green-dark); padding-bottom: 4px; }
+    .bar-bg { width: 100%; height: 12px; border: 1px solid var(--green-dim); background: #000; margin: 6px 0; overflow: hidden; }
+    .bar-fill { height: 100%; width: 0%; background: var(--green); transition: width 0.2s; }
+    .stat-row { display: flex; justify-content: space-between; margin: 4px 0; }
+    #hex-stream { font-size: 11px; color: var(--green-dim); line-height: 1.3; height: 110px; overflow: hidden; }
 
-    #cmd-input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: var(--green);
-      font-family: var(--font-mono);
-      font-size: 15px;
-      text-shadow: 0 0 6px rgba(0, 255, 65, 0.5);
-    }
-
-    #auto-hint {
-      border-top: 1px solid var(--green-dark);
-      padding-top: 8px;
-      font-size: 12px;
-      color: var(--green-dim);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    aside {
-      background: var(--panel-bg);
-      border-left: 1px solid var(--green-dim);
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      font-size: 13px;
-    }
-
-    .widget {
-      border: 1px solid var(--green-dark);
-      padding: 10px;
-      background: rgba(0, 20, 5, 0.6);
-    }
-
-    .widget-title {
-      font-size: 12px;
-      color: var(--cyan);
-      margin-bottom: 8px;
-      border-bottom: 1px dashed var(--green-dark);
-      padding-bottom: 4px;
-    }
-
-    .bar-bg {
-      width: 100%;
-      height: 12px;
-      border: 1px solid var(--green-dim);
-      background: #000;
-      margin: 6px 0;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--green);
-      transition: width 0.2s;
-    }
-
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      margin: 4px 0;
-    }
-
-    #hex-stream {
-      font-size: 11px;
-      color: var(--green-dim);
-      line-height: 1.3;
-      height: 110px;
-      overflow: hidden;
-    }
-
-    #overlay-alert {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.82);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 500;
-    }
-
-    #overlay-alert.show {
-      display: flex;
-    }
-
-    .alert-box {
-      border: 3px solid var(--green);
-      background: #020c04;
-      padding: 28px 44px;
-      text-align: center;
-      box-shadow: 0 0 35px rgba(0, 255, 65, 0.5);
-      animation: popIn 0.18s ease-out;
-    }
-
-    .alert-box.denied {
-      border-color: var(--red);
-      color: var(--red);
-      box-shadow: 0 0 35px rgba(255, 42, 42, 0.6);
-      text-shadow: 0 0 10px rgba(255, 42, 42, 0.8);
-    }
-
-    .alert-title {
-      font-size: 32px;
-      font-weight: bold;
-      letter-spacing: 3px;
-      margin-bottom: 10px;
-    }
-
-    .alert-sub {
-      font-size: 14px;
-      margin-bottom: 18px;
-    }
-
-    @keyframes popIn {
-      from { transform: scale(0.85); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
+    #overlay-alert { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.82); display: none; justify-content: center; align-items: center; z-index: 500; }
+    #overlay-alert.show { display: flex; }
+    .alert-box { border: 3px solid var(--green); background: #020c04; padding: 28px 44px; text-align: center; box-shadow: 0 0 35px rgba(0, 255, 65, 0.5); animation: popIn 0.18s ease-out; }
+    .alert-box.denied { border-color: var(--red); color: var(--red); box-shadow: 0 0 35px rgba(255, 42, 42, 0.6); text-shadow: 0 0 10px rgba(255, 42, 42, 0.8); }
+    .alert-title { font-size: 32px; font-weight: bold; letter-spacing: 3px; margin-bottom: 10px; }
+    .alert-sub { font-size: 14px; margin-bottom: 18px; }
+    @keyframes popIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   </style>
 </head>
 <body>
-
   <header>
     <div class="brand">
       <span class="status-dot"></span>
@@ -340,12 +145,10 @@
   <main>
     <section id="terminal-wrap" onclick="focusInput()">
       <div id="output"></div>
-
       <div id="auto-hint">
         <span>提示：隨意敲擊鍵盤任意鍵瘋狂輸出程式碼 | [Enter] 觸發入侵進度條 | [Esc] 關閉彈窗</span>
         <span>熱鍵：[F1] ACCESS GRANTED | [F2] FIREWALL ALERT</span>
       </div>
-
       <div id="cmd-bar">
         <span class="line-ok">root@kali:~#</span>
         <input type="text" id="cmd-input" autocomplete="off" spellcheck="false" placeholder="輸入 help 查看可用指令..." />
@@ -362,7 +165,6 @@
           <button class="danger" onclick="triggerAlert(false)">觸發警報</button>
         </div>
       </div>
-
       <div class="widget">
         <div class="widget-title">// 節點追蹤 (NODE TRACE)</div>
         <div class="stat-row"><span>跳板 IP：</span><span id="stat-ip">185.220.101.42</span></div>
@@ -370,7 +172,6 @@
         <div class="stat-row"><span>封包速率：</span><span id="stat-pkt">0 pkt/s</span></div>
         <div class="stat-row"><span>追蹤風險：</span><span id="stat-trace" class="line-ok">LOW (4%)</span></div>
       </div>
-
       <div class="widget" style="flex:1;">
         <div class="widget-title">// 記憶體十六進位傾印 (HEX DUMP)</div>
         <div id="hex-stream"></div>
@@ -401,3 +202,273 @@
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
         gain.gain.setValueAtTime(vol, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById("btn-sound").textContent = soundEnabled ? "音效: 開" : "音效: 關";
+    }
+
+    const HACKER_SOURCE_CODE = `
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/netfilter.h>
+
+struct exploit_frame {
+    uint64_t target_addr;
+    uint32_t bypass_token;
+    unsigned char shellcode[128];
+};
+
+static int inject_root_hook(struct exploit_frame *frame) {
+    unsigned long cr0 = read_cr0();
+    write_cr0(cr0 & ~0x00010000);
+    printk(KERN_INFO "[PHANTOM] Overriding syscall_table[__NR_execve]...\\n");
+    for (int i = 0; i < 64; i++) {
+        frame->shellcode[i] ^= 0x5A;
+        if ((frame->bypass_token >> (i % 16)) & 1) {
+            commit_creds(prepare_kernel_cred(0));
+        }
+    }
+    write_cr0(cr0);
+    return 0x0;
+}
+
+async function bypassFirewallGateway(gatewayIp, port = 443) {
+    const socket = await createRawStealthSocket({ spoofMac: true, ttl: 128 });
+    const handshake = Buffer.from("SYN_FLOOD_AUTH_OVERRIDE_0x9F8E", "utf8");
+    await socket.sendPacket(gatewayIp, port, handshake);
+    console.log("[+] Firewall rule #104 bypassed. Tunnel established.");
+    return decryptMasterKey(socket.recvBuffer(4096));
+}
+
+SELECT user_id, username, password_hash, clearance_level 
+FROM sys_admin_vault 
+WHERE clearance_level >= 9 AND account_status = 'ACTIVE';
+`;
+
+    let currentMode = "auto";
+    let codeIndex = 0;
+    let isBreaching = false;
+
+    const outputEl = document.getElementById("output");
+    const cmdBarEl = document.getElementById("cmd-bar");
+    const cmdInputEl = document.getElementById("cmd-input");
+    const autoHintEl = document.getElementById("auto-hint");
+    const progressBarEl = document.getElementById("progress-bar");
+    const progressTextEl = document.getElementById("progress-text");
+
+    function appendLine(text, className = "") {
+      const div = document.createElement("div");
+      if (className) div.className = className;
+      div.textContent = text;
+      outputEl.appendChild(div);
+      outputEl.scrollTop = outputEl.scrollHeight;
+    }
+
+    function clearTerminal() {
+      outputEl.innerHTML = "";
+      codeIndex = 0;
+      if (currentMode === "auto") {
+        outputEl.innerHTML = '<span class="line-sys">[SYSTEM READY] 演戲模式已啟動。請開始敲擊鍵盤任意鍵...</span>\n\n<span id="auto-code"></span><span class="cursor"></span>';
+      } else {
+        printShellWelcome();
+      }
+    }
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.getElementById("btn-mode-auto").classList.toggle("active", mode === "auto");
+      document.getElementById("btn-mode-shell").classList.toggle("active", mode === "shell");
+      cmdBarEl.classList.toggle("visible", mode === "shell");
+      autoHintEl.style.display = mode === "auto" ? "flex" : "none";
+      clearTerminal();
+      if (mode === "shell") cmdInputEl.focus();
+    }
+
+    function focusInput() {
+      if (currentMode === "shell") cmdInputEl.focus();
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") { closeAlert(); return; }
+      if (e.key === "F1") { e.preventDefault(); triggerAlert(true); return; }
+      if (e.key === "F2") { e.preventDefault(); triggerAlert(false); return; }
+      if (currentMode !== "auto") return;
+      if (e.ctrlKey || e.altKey || e.metaKey) return;
+      if (e.key === "Enter") { e.preventDefault(); runBreachSequence(); return; }
+
+      const autoCodeSpan = document.getElementById("auto-code");
+      if (!autoCodeSpan) return;
+
+      const chunkSize = Math.floor(Math.random() * 4) + 4;
+      const chunk = HACKER_SOURCE_CODE.slice(codeIndex, codeIndex + chunkSize);
+      codeIndex += chunkSize;
+      if (codeIndex >= HACKER_SOURCE_CODE.length) codeIndex = 0;
+
+      autoCodeSpan.textContent += chunk;
+      outputEl.scrollTop = outputEl.scrollHeight;
+      playBeep(520 + Math.random() * 240, 0.025, "square", 0.02);
+    });
+
+    function runBreachSequence() {
+      if (isBreaching) return;
+      isBreaching = true;
+      let pct = 0;
+      progressTextEl.className = "line-warn";
+
+      const logs = [
+        "[*] 正在繞過 NAT 防火牆閘道...",
+        "[*] 注入 SSH 緩衝區溢位封包 (0x7FFE0012)...",
+        "[*] 暴力破解 RSA-4096 金鑰碎片...",
+        "[+] 成功攔截最高管理員 Session Token！"
+      ];
+
+      const timer = setInterval(() => {
+        pct += Math.floor(Math.random() * 14) + 6;
+        if (pct >= 100) {
+          pct = 100;
+          clearInterval(timer);
+          isBreaching = false;
+          progressBarEl.style.width = "100%";
+          progressTextEl.textContent = "BREACHED (100%)";
+          progressTextEl.className = "line-ok";
+          if (currentMode === "shell") appendLine("[SUCCESS] 目標主機防火牆已完全瓦解！", "line-ok");
+          triggerAlert(true);
+        } else {
+          progressBarEl.style.width = pct + "%";
+          progressTextEl.textContent = "INJECTING... (" + pct + "%)";
+          playBeep(300 + pct * 5, 0.03, "sawtooth", 0.02);
+          if (currentMode === "shell" && pct % 25 < 12) {
+            appendLine(logs[Math.floor(pct / 26)] || logs[0], "line-dim");
+          }
+        }
+      }, 130);
+    }
+
+    function triggerAlert(granted = true) {
+      const overlay = document.getElementById("overlay-alert");
+      const box = document.getElementById("alert-box");
+      const title = document.getElementById("alert-title");
+      const sub = document.getElementById("alert-sub");
+
+      if (granted) {
+        box.classList.remove("denied");
+        title.textContent = "ACCESS GRANTED";
+        sub.textContent = "ROOT PRIVILEGES ACQUIRED // 最高權限已取得";
+        playBeep(880, 0.12, "sine", 0.06);
+        setTimeout(() => playBeep(1174, 0.2, "sine", 0.06), 110);
+      } else {
+        box.classList.add("denied");
+        title.textContent = "INTRUSION DETECTED";
+        sub.textContent = "FIREWALL LOCKDOWN // 警告：偵測到反向追蹤！";
+        playBeep(180, 0.22, "sawtooth", 0.08);
+        setTimeout(() => playBeep(140, 0.25, "sawtooth", 0.08), 220);
+      }
+      overlay.classList.add("show");
+    }
+
+    function closeAlert() {
+      document.getElementById("overlay-alert").classList.remove("show");
+      if (currentMode === "shell") cmdInputEl.focus();
+    }
+
+    let gameState = {
+      scanned: false,
+      cracked: false,
+      files: {
+        "readme.txt": "任務目標：掃描內網主機、破解主伺服器密碼並讀取機密檔案。",
+        "天條_備份.log": "[機密紀錄] 1.準時上課 2.禁止帶飲料進電腦教室 3.水壺要用保溫杯！",
+        "grade_db.enc": "ENCRYPTED_DATA // 請先執行 crack 10.0.42.99 取得解密金鑰。"
+      }
+    };
+
+    function printShellWelcome() {
+      appendLine("PhantomOS v4.2.0-amd64 (tty1)", "line-sys");
+      appendLine("輸入 'help' 查看所有可用滲透指令。\n", "line-dim");
+    }
+
+    cmdInputEl.addEventListener("keydown", (e) => {
+      playBeep(680, 0.02, "square", 0.015);
+      if (e.key === "Enter") {
+        const raw = cmdInputEl.value.trim();
+        cmdInputEl.value = "";
+        if (!raw) return;
+        appendLine("root@kali:~# " + raw, "line-ok");
+        handleCommand(raw);
+      }
+    });
+
+    function handleCommand(raw) {
+      const parts = raw.split(/\s+/);
+      const cmd = parts[0].toLowerCase();
+      const arg = parts[1] || "";
+
+      switch (cmd) {
+        case "help":
+          appendLine("可用指令清單：", "line-sys");
+          appendLine("  scan              - 掃描區域網路中的活躍伺服器節點");
+          appendLine("  crack <IP>        - 對指定 IP 發動密碼暴力破解與進度條滲透");
+          appendLine("  ls                - 列出目前已掛載的遠端檔案");
+          appendLine("  cat <檔名>        - 讀取指定檔案內容");
+          appendLine("  alert             - 測試系統紅色警報彈窗");
+          appendLine("  clear             - 清空終端機畫面");
+          break;
+        case "scan":
+          appendLine("[*] 正在掃描 10.0.42.0/24 網段...", "line-dim");
+          setTimeout(() => {
+            gameState.scanned = true;
+            appendLine("發現 2 個活躍節點：", "line-sys");
+            appendLine("  -> 10.0.42.1   [GATEWAY-ROUTER]   PORT: 80, 443 (LOCKED)");
+            appendLine("  -> 10.0.42.99  [CLASS-MAINFRAME]  PORT: 22 (VULNERABLE)", "line-warn");
+            appendLine("提示：試著輸入 'crack 10.0.42.99' 進行滲透。", "line-dim");
+          }, 500);
+          break;
+        case "crack":
+          if (arg !== "10.0.42.99") {
+            appendLine("[ERR] 無效目標或尚未掃描。請先執行 'scan' 並指定正確 IP。", "line-err");
+            return;
+          }
+          appendLine("[*] 啟動自動化滲透模組，目標：10.0.42.99...", "line-warn");
+          gameState.cracked = true;
+          gameState.files["grade_db.enc"] = "[解密成功] 學期總成績加分密鑰：COOLSEA-ROOT-2026 (甲上！)";
+          runBreachSequence();
+          break;
+        case "ls":
+          appendLine(Object.keys(gameState.files).join("    "), "line-sys");
+          break;
+        case "cat":
+          if (!arg) appendLine("用法：cat <檔名>", "line-warn");
+          else if (gameState.files[arg]) appendLine(gameState.files[arg], gameState.cracked ? "line-ok" : "");
+          else appendLine("cat: " + arg + ": 找不到此檔案", "line-err");
+          break;
+        case "alert":
+          triggerAlert(false);
+          break;
+        case "clear":
+          clearTerminal();
+          break;
+        default:
+          appendLine("bash: " + cmd + ": 找不到指令 (輸入 help 查看說明)", "line-err");
+      }
+    }
+
+    setInterval(() => {
+      document.getElementById("stat-pkt").textContent = (Math.floor(Math.random() * 900) + 120) + " pkt/s";
+      const hexEl = document.getElementById("hex-stream");
+      let line = "";
+      for (let i = 0; i < 8; i++) {
+        line += Math.floor(Math.random() * 256).toString(16).padStart(2, "0").toUpperCase() + " ";
+      }
+      hexEl.textContent = line + "\n" + hexEl.textContent.slice(0, 320);
+    }, 350);
+
+    switchMode("auto");
+  </script>
+</body>
+</html>
